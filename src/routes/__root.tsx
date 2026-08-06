@@ -124,8 +124,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <TopBar />
+      <main className="min-h-[calc(100vh-8rem)] pb-24">
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </main>
+      <BottomNav />
+      <Toaster />
     </QueryClientProvider>
   );
 }
+
