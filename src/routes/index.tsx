@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessageSquareQuote, Sparkles } from "lucide-react";
+import { ArrowRight, MessageSquareQuote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -21,69 +21,37 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const STEPS = [
-  { n: "1", title: "Describe what happened", body: "In your own words. Context is optional, never required." },
-  { n: "2", title: "Explore possible meanings", body: "Several plausible readings, with the reasoning behind each." },
-  { n: "3", title: "Choose how to respond", body: "Draft replies and a clarification question, with trade-offs." },
-];
-
 function Home() {
   return (
-    <div className="mx-auto max-w-3xl px-5 pb-6 pt-10 sm:pt-16">
+    <div className="mx-auto w-full max-w-xl px-4 pb-8 pt-10 sm:px-5 sm:pt-16">
       <section className="animate-rise text-center">
-        <p className="text-sm font-medium tracking-wide text-primary">An AI cultural translator</p>
-        <h1 className="mt-3 font-display text-4xl font-semibold leading-tight sm:text-5xl">
+        <h1 className="font-display text-3xl font-semibold leading-tight sm:text-5xl">
           Culture<span className="text-primary">Lens</span>
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-          Hello — good to see you. Something said that you're still turning over? Let's look at what it might have
-          meant, together and without jumping to conclusions.
+        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Something said that you're still turning over? Describe it, and we'll look at what it might have meant.
         </p>
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button asChild size="lg" className="h-12 rounded-full px-6 text-sm shadow-card transition-transform hover:-translate-y-0.5">
+        <div className="mt-7 space-y-2.5">
+          <Button asChild size="lg" className="h-12 w-full rounded-full text-sm shadow-card">
             <Link to="/analyse">
               Analyse a situation <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="secondary"
-            className="h-12 rounded-full px-6 text-sm transition-transform hover:-translate-y-0.5"
-          >
+          <Button asChild variant="secondary" size="lg" className="h-12 w-full rounded-full text-sm">
             <Link to="/compose">
-              <MessageSquareQuote className="mr-1 h-4 w-4" /> Organise language for an output
+              <MessageSquareQuote className="mr-1.5 h-4 w-4" /> Help me word something
             </Link>
           </Button>
-        </div>
-
-        <div className="mt-3">
-          <Button asChild variant="ghost" className="rounded-full text-sm text-muted-foreground hover:text-foreground">
+          <Button asChild variant="ghost" className="w-full rounded-full text-sm text-muted-foreground">
             <Link to="/analyse" search={{ example: true }}>
-              <Sparkles className="mr-1 h-4 w-4" /> Try an example
+              Try an example
             </Link>
           </Button>
         </div>
       </section>
 
-      <section className="mt-12 grid gap-3 sm:grid-cols-3">
-        {STEPS.map((step, i) => (
-          <div
-            key={step.n}
-            className="animate-rise card-surface p-5"
-            style={{ animationDelay: `${100 + i * 80}ms` }}
-          >
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
-              {step.n}
-            </span>
-            <h2 className="mt-3 text-sm font-semibold">{step.title}</h2>
-            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{step.body}</p>
-          </div>
-        ))}
-      </section>
-
-      <p className="mt-10 rounded-2xl bg-muted/70 px-5 py-4 text-center text-xs leading-relaxed text-muted-foreground">
+      <p className="animate-rise mt-10 text-center text-[11px] leading-relaxed text-muted-foreground">
         CultureLens identifies possibilities, not people's definite intentions.
       </p>
     </div>
