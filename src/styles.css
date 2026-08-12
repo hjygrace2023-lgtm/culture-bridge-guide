@@ -67,6 +67,10 @@
   --color-sage-foreground: var(--sage-foreground);
   --color-lilac: var(--lilac);
   --color-lilac-foreground: var(--lilac-foreground);
+  --color-bubble-user: var(--bubble-user);
+  --color-bubble-user-foreground: var(--bubble-user-foreground);
+  --color-bubble-ai: var(--bubble-ai);
+  --color-bubble-ai-foreground: var(--bubble-ai-foreground);
   --shadow-card: var(--shadow-card);
   --shadow-lift: var(--shadow-lift);
   --font-display: var(--font-display);
@@ -118,6 +122,10 @@
   --sage-foreground: oklch(0.38 0.06 155);
   --lilac: oklch(0.93 0.035 300);
   --lilac-foreground: oklch(0.4 0.07 300);
+  --bubble-user: oklch(0.9 0.075 168);
+  --bubble-user-foreground: oklch(0.28 0.04 180);
+  --bubble-ai: oklch(0.995 0.004 95);
+  --bubble-ai-foreground: oklch(0.26 0.02 190);
   --shadow-card: 0 1px 2px oklch(0.4 0.03 190 / 6%), 0 12px 28px -18px oklch(0.4 0.03 190 / 35%);
   --shadow-lift: 0 2px 4px oklch(0.4 0.03 190 / 7%), 0 22px 44px -24px oklch(0.4 0.03 190 / 42%);
   --font-display: "Fraunces", ui-serif, Georgia, serif;
@@ -158,6 +166,10 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+  --bubble-user: oklch(0.42 0.06 178);
+  --bubble-user-foreground: oklch(0.97 0.01 180);
+  --bubble-ai: oklch(0.24 0.03 260);
+  --bubble-ai-foreground: oklch(0.96 0.005 250);
 }
 
 @layer base {
@@ -202,3 +214,9 @@
   animation: cl-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+
+@utility bubble-base {
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+  padding: 0.9rem 1rem;
+}
