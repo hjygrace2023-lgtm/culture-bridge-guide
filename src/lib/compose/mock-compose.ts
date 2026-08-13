@@ -90,9 +90,7 @@ export function composeDrafts(input: ComposeInput): ComposeDraft[] {
 
   const ack =
     input.mode === "reply"
-      ? theirs
-        ? `Thank you for your message about ${shorten(theirs)}`
-        : "Thank you for getting back to me."
+      ? "Thank you for your message."
       : "";
 
   const asking = input.mode === "request";
@@ -102,7 +100,7 @@ export function composeDrafts(input: ComposeInput): ComposeDraft[] {
     asking ? `I hope this is a reasonable moment to ask.` : `${ack}`,
     asking
       ? `Would it be possible for you to help with this: ${lower(core)}`
-      : `Here's where I stand: ${lower(core)}`,
+      : `Here's where I stand. ${core}`,
     cultureLine(input, "soft"),
     asking ? `If that isn't workable, I completely understand.` : `If I've read anything the wrong way, I'd like to know.`,
     bye,
@@ -163,11 +161,6 @@ function join(parts: string[]): string {
 
 function lower(text: string): string {
   return text.charAt(0).toLowerCase() + text.slice(1);
-}
-
-function shorten(text: string): string {
-  const t = text.replace(/[.?!]$/, "");
-  return t.length > 60 ? `${t.slice(0, 60).trim()}…` : t;
 }
 
 /** Best-effort format guess; the UI always shows it as a correctable chip. */
