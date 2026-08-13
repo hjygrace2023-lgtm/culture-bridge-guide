@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { TopBar } from "@/components/layout/top-bar";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { CultureBackground } from "@/components/layout/culture-background";
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -128,8 +129,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <CultureBackground />
       <TopBar />
-      <main className="min-h-[calc(100vh-8rem)] pb-24">
+      <main className="min-h-[calc(100vh-8rem)] overflow-x-hidden pb-24">
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </main>
