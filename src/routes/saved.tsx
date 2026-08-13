@@ -26,7 +26,7 @@ function SavedPage() {
   const [mode, setMode] = useState<"list" | "cards">("list");
 
   return (
-    <div className="mx-auto w-full max-w-xl px-4 pb-8 pt-6 sm:px-5">
+    <div className="mx-auto max-w-2xl px-5 pb-8 pt-8">
       <div className="animate-rise flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-semibold">Saved scenarios</h1>

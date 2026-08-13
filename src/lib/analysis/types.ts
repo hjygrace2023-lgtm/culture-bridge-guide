@@ -156,28 +156,3 @@ export const TONE_LABEL: Record<ToneKey, string> = {
   "more-direct": "More direct",
   "more-deferential": "More deferential",
 };
-
-/**
- * Simplified dropdown option sets used by the UI. The full label maps above stay
- * intact for rendering saved analyses; these short lists keep the form fast to use.
- */
-export const RELATIONSHIP_OPTIONS: [string, string][] = [
-  ["teacher-student", "Teacher or mentor"],
-  ["manager-employee", "Work — manager or colleague"],
-  ["friends", "Friend or family"],
-  ["other", "Someone else"],
-];
-
-export const OUTCOME_OPTIONS: [string, string][] = [
-  ["understand-meaning", "Understand what they meant"],
-  ["ask-clarification", "Ask for clarification"],
-  ["preserve-relationship", "Keep the relationship smooth"],
-  ["solve-problem", "Sort out a practical problem"],
-];
-
-/** Three tone adjustments instead of five. */
-export const TONE_OPTIONS: [ToneKey, string][] = [
-  ["warmer", "Warmer"],
-  ["more-direct", "More direct"],
-  ["more-formal", "More formal"],
-];

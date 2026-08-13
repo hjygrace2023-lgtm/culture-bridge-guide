@@ -1,11 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { AlertTriangle, Check, Copy, HelpCircle, Plus, RefreshCw, Save } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  Copy,
+  Eye,
+  HelpCircle,
+  Lightbulb,
+  Plus,
+  RefreshCw,
+  Save,
+  Scale,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Bubble, BubbleTitle } from "@/components/chat/bubble";
-import { getCurrentAnalysis, useSavedScenarios } from "@/lib/analysis/storage";
+import { getCurrentAnalysis } from "@/lib/analysis/storage";
+import { useSavedScenarios } from "@/lib/analysis/storage";
 import { analysisToText } from "@/lib/analysis/format";
-import { PLAUSIBILITY_LABEL, TONE_OPTIONS, type Analysis, type ToneKey } from "@/lib/analysis/types";
+import {
+  PLAUSIBILITY_LABEL,
+  TONE_LABEL,
+  type Analysis,
+  type FactorKind,
+  type ToneKey,
+} from "@/lib/analysis/types";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -27,7 +44,6 @@ export const Route = createFileRoute("/result")({
 function ResultPage() {
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [ready, setReady] = useState(false);
-  const [showDetail, setShowDetail] = useState(false);
   const { save } = useSavedScenarios();
   const navigate = useNavigate();
 
@@ -38,9 +54,9 @@ function ResultPage() {
 
   if (!ready) {
     return (
-      <div className="mx-auto w-full max-w-xl space-y-3 px-4 pt-8 sm:px-5">
+      <div className="mx-auto max-w-2xl space-y-3 px-5 pt-10">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />
+          <div key={i} className="h-28 animate-pulse rounded-2xl bg-muted" />
         ))}
       </div>
     );
@@ -48,9 +64,11 @@ function ResultPage() {
 
   if (!analysis) {
     return (
-      <div className="mx-auto max-w-sm px-5 pt-20 text-center">
+      <div className="mx-auto max-w-md px-5 pt-20 text-center">
         <h1 className="font-display text-2xl font-semibold">No analysis open</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Describe a situation and the readings will appear here.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Describe a situation and CultureLens will lay out the possible readings here.
+        </p>
         <Button asChild className="mt-6 rounded-full">
           <Link to="/analyse">Analyse a situation</Link>
         </Button>
@@ -59,33 +77,42 @@ function ResultPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-xl space-y-3 px-4 pb-8 pt-6 sm:px-5">
-      <Bubble side="user">
-        <p className="text-sm leading-relaxed">{analysis.input.situation}</p>
-      </Bubble>
+    <div className="mx-auto max-w-2xl space-y-4 px-5 pb-8 pt-8">
+      <header className="animate-rise">
+        <p className="text-xs font-medium uppercase tracking-wider text-primary">Analysis</p>
+        <h1 className="mt-1 font-display text-2xl font-semibold leading-snug">{analysis.title}</h1>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          These are possibilities drawn from what you described. There is not enough information to determine the
+          speaker's intention with certainty.
+        </p>
+      </header>
 
       {analysis.safetyNotice && (
-        <Bubble side="ai" className="border-clay-foreground/25 bg-clay/70 text-clay-foreground">
-          <BubbleTitle icon={<AlertTriangle className="h-4 w-4" />}>Before going further</BubbleTitle>
-          <p className="mt-1.5 text-xs leading-relaxed">{analysis.safetyNotice}</p>
-        </Bubble>
+        <div className="animate-rise rounded-2xl border border-clay-foreground/25 bg-clay/60 p-4 text-clay-foreground">
+          <p className="flex items-center gap-2 text-sm font-semibold">
+            <AlertTriangle className="h-4 w-4" /> Before going further
+          </p>
+          <p className="mt-2 text-xs leading-relaxed">{analysis.safetyNotice}</p>
+        </div>
       )}
 
-      <Bubble side="ai" delay={60}>
-        <BubbleTitle>What was literally said</BubbleTitle>
-        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{analysis.literalMeaning}</p>
-      </Bubble>
+      <Section n={1} title="What was literally communicated" icon={<Eye className="h-4 w-4" />}>
+        <p className="text-sm leading-relaxed text-muted-foreground">{analysis.literalMeaning}</p>
+      </Section>
 
-      <Bubble side="ai" delay={120}>
-        <BubbleTitle>What it might have meant</BubbleTitle>
-        <div className="mt-2 space-y-2.5">
-          {analysis.interpretations.map((it) => (
-            <div key={it.id} className="rounded-xl bg-muted/60 p-3">
+      <Section n={2} title="Plausible interpretations" icon={<Lightbulb className="h-4 w-4" />}>
+        <div className="space-y-3">
+          {analysis.interpretations.map((it, i) => (
+            <article
+              key={it.id}
+              className="animate-rise rounded-xl border border-border/80 bg-background/60 p-4"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <h3 className="text-sm font-semibold">{it.title}</h3>
                 <span
                   className={cn(
-                    "rounded-full px-2 py-0.5 text-[10px] font-medium",
+                    "rounded-full px-2.5 py-0.5 text-[11px] font-medium",
                     it.plausibility === "more-plausible" && "bg-sage text-sage-foreground",
                     it.plausibility === "possible" && "bg-sand text-sand-foreground",
                     it.plausibility === "requires-more-context" && "bg-lilac text-lilac-foreground",
@@ -94,130 +121,175 @@ function ResultPage() {
                   {PLAUSIBILITY_LABEL[it.plausibility]}
                 </span>
               </div>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{it.mightHaveMeant}</p>
-              {showDetail && (
-                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{it.whyPlausible}</p>
-              )}
-            </div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{it.mightHaveMeant}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                <span className="font-medium text-foreground">Why this is plausible: </span>
+                {it.whyPlausible}
+              </p>
+              <ul className="mt-2 space-y-1">
+                {it.clues.map((clue) => (
+                  <li key={clue} className="text-xs leading-relaxed text-muted-foreground">
+                    · {clue}
+                  </li>
+                ))}
+              </ul>
+            </article>
           ))}
         </div>
-      </Bubble>
+      </Section>
 
-      <Bubble side="ai" delay={180}>
-        <BubbleTitle>What you could do</BubbleTitle>
-        <p className="mt-1.5 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-          {analysis.strategy.name}
-        </p>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{analysis.strategy.why}</p>
-        <ResponseList analysis={analysis} />
-      </Bubble>
+      <Section n={3} title="What may be creating the gap" icon={<Scale className="h-4 w-4" />}>
+        <div className="space-y-4">
+          {(["cultural", "individual", "situational"] as FactorKind[]).map((kind) => {
+            const items = analysis.gapFactors.filter((f) => f.kind === kind);
+            if (!items.length) return null;
+            return (
+              <div key={kind}>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {kind === "cultural"
+                    ? "Cultural patterns (tendencies, not rules)"
+                    : kind === "individual"
+                      ? "Individual factors"
+                      : "Situational factors"}
+                </p>
+                <div className="mt-2 space-y-2">
+                  {items.map((f) => (
+                    <div key={f.id} className="rounded-xl bg-muted/60 p-3">
+                      <span
+                        className={cn(
+                          "inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium",
+                          kind === "cultural" && "bg-accent text-accent-foreground",
+                          kind === "individual" && "bg-lilac text-lilac-foreground",
+                          kind === "situational" && "bg-sand text-sand-foreground",
+                        )}
+                      >
+                        {f.tag}
+                      </span>
+                      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{f.note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Section>
 
-      <Bubble side="ai" delay={240}>
-        <BubbleTitle icon={<HelpCircle className="h-4 w-4" />}>One question you could ask</BubbleTitle>
-        <p className="mt-2 rounded-xl bg-accent/60 p-3 text-sm leading-relaxed text-accent-foreground">
-          {analysis.clarificationQuestion}
-        </p>
-        <CopyButton className="mt-2.5" value={analysis.clarificationQuestion} label="Copy question" />
-      </Bubble>
-
-      <button
-        type="button"
-        onClick={() => setShowDetail((v) => !v)}
-        className="mx-auto block rounded-full px-4 py-2 text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-      >
-        {showDetail ? "Hide the detailed breakdown" : "Show the detailed breakdown"}
-      </button>
-
-      {showDetail && (
-        <>
-          <Bubble side="ai">
-            <BubbleTitle>What may be creating the gap</BubbleTitle>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {analysis.gapFactors.map((f) => (
-                <span key={f.id} className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium">
-                  {f.tag}
-                </span>
-              ))}
-            </div>
-            <ul className="mt-2.5 space-y-1.5">
-              {analysis.gapFactors.map((f) => (
-                <li key={f.id} className="text-xs leading-relaxed text-muted-foreground">
-                  · {f.note}
+      <Section n={4} title="Facts versus assumptions" icon={<Scale className="h-4 w-4" />}>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-xl bg-sage/40 p-4">
+            <p className="text-xs font-semibold text-sage-foreground">What you observed</p>
+            <ul className="mt-2 space-y-1.5">
+              {analysis.observed.map((o) => (
+                <li key={o} className="text-xs leading-relaxed text-muted-foreground">
+                  · {o}
                 </li>
               ))}
             </ul>
-          </Bubble>
+          </div>
+          <div className="rounded-xl bg-sand/50 p-4">
+            <p className="text-xs font-semibold text-sand-foreground">What you may be inferring</p>
+            <ul className="mt-2 space-y-1.5">
+              {analysis.inferred.map((o) => (
+                <li key={o} className="text-xs leading-relaxed text-muted-foreground">
+                  · {o}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Section>
 
-          <Bubble side="ai">
-            <BubbleTitle>Facts, assumptions and open questions</BubbleTitle>
-            <List title="Observed" items={analysis.observed} />
-            <List title="Inferred" items={analysis.inferred} />
-            <List title="Still uncertain" items={analysis.uncertainties} />
-            <List title="What would sharpen this" items={analysis.wouldHelp} />
-          </Bubble>
-        </>
-      )}
+      <Section n={5} title="What remains uncertain" icon={<HelpCircle className="h-4 w-4" />}>
+        <ul className="space-y-1.5">
+          {analysis.uncertainties.map((u) => (
+            <li key={u} className="text-sm leading-relaxed text-muted-foreground">
+              · {u}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 rounded-xl bg-muted/60 p-3">
+          <p className="text-xs font-semibold">What would sharpen this</p>
+          <ul className="mt-1.5 space-y-1">
+            {analysis.wouldHelp.map((w) => (
+              <li key={w} className="text-xs leading-relaxed text-muted-foreground">
+                · {w}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Section>
 
-      <div className="grid gap-2 pt-1 sm:grid-cols-2">
-        <Button
-          className="h-11 rounded-full"
-          onClick={() => {
-            save(analysis);
-            toast.success("Saved to this browser");
-          }}
-        >
-          <Save className="mr-1.5 h-4 w-4" /> Save
-        </Button>
-        <Button variant="secondary" className="h-11 rounded-full" onClick={() => navigate({ to: "/analyse" })}>
-          <Plus className="mr-1.5 h-4 w-4" /> New scenario
-        </Button>
-        <Button asChild variant="ghost" className="h-11 rounded-full text-xs text-muted-foreground">
+      <Section n={6} title="Recommended strategy" icon={<Lightbulb className="h-4 w-4" />}>
+        <p className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+          {analysis.strategy.name}
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{analysis.strategy.why}</p>
+        {analysis.strategy.cautions && (
+          <p className="mt-3 rounded-xl bg-clay/50 p-3 text-xs leading-relaxed text-clay-foreground">
+            {analysis.strategy.cautions}
+          </p>
+        )}
+      </Section>
+
+      <Section n={7} title="Ways you could respond" icon={<Copy className="h-4 w-4" />}>
+        <ResponseList analysis={analysis} />
+      </Section>
+
+      <Section n={8} title="Best clarification question" icon={<HelpCircle className="h-4 w-4" />}>
+        <p className="rounded-xl bg-accent/60 p-4 text-sm leading-relaxed text-accent-foreground">
+          {analysis.clarificationQuestion}
+        </p>
+        <CopyButton className="mt-3" value={analysis.clarificationQuestion} label="Copy question" />
+      </Section>
+
+      <div className="animate-rise grid gap-2 pt-2 sm:grid-cols-2">
+        <Button asChild variant="secondary" className="rounded-full">
           <Link to="/analyse" search={{ edit: true }}>
-            <RefreshCw className="mr-1.5 h-3.5 w-3.5" /> Edit and re-analyse
+            <RefreshCw className="mr-1.5 h-4 w-4" /> Edit context and analyse again
           </Link>
         </Button>
-        <CopyButton value={analysisToText(analysis)} label="Copy full analysis" variant="ghost" full />
+        <CopyButton value={analysisToText(analysis)} label="Copy full analysis" variant="secondary" full />
+        <Button
+          variant="secondary"
+          className="rounded-full"
+          onClick={() => {
+            save(analysis);
+            toast.success("Scenario saved to this browser");
+          }}
+        >
+          <Save className="mr-1.5 h-4 w-4" /> Save scenario
+        </Button>
+        <Button className="rounded-full" onClick={() => navigate({ to: "/analyse" })}>
+          <Plus className="mr-1.5 h-4 w-4" /> Start a new scenario
+        </Button>
       </div>
 
-      <p className="pt-1 text-center text-[11px] leading-relaxed text-muted-foreground">
-        CultureLens identifies possibilities, not people's definite intentions.
+      <p className="pt-2 text-center text-[11px] leading-relaxed text-muted-foreground">
+        Tone, institutional policy, the relationship and previous interactions could all change how this exchange
+        should be read. CultureLens identifies possibilities, not people's definite intentions.
       </p>
-    </div>
-  );
-}
-
-function List({ title, items }: { title: string; items: string[] }) {
-  if (!items.length) return null;
-  return (
-    <div className="mt-3">
-      <p className="text-xs font-semibold">{title}</p>
-      <ul className="mt-1 space-y-1">
-        {items.map((item) => (
-          <li key={item} className="text-xs leading-relaxed text-muted-foreground">
-            · {item}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
 
 function ResponseList({ analysis }: { analysis: Analysis }) {
   const [tone, setTone] = useState<ToneKey | null>(null);
+  const tones = useMemo(() => Object.entries(TONE_LABEL) as [ToneKey, string][], []);
 
   return (
-    <div className="mt-3">
+    <div>
       <div className="flex flex-wrap gap-1.5">
-        {TONE_OPTIONS.map(([key, label]) => (
+        {tones.map(([key, label]) => (
           <button
             key={key}
             type="button"
             onClick={() => setTone((t) => (t === key ? null : key))}
             className={cn(
-              "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+              "rounded-full border px-3 py-1 text-xs font-medium transition-all duration-200",
               tone === key
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-background text-muted-foreground",
+                : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
             )}
           >
             {label}
@@ -225,16 +297,27 @@ function ResponseList({ analysis }: { analysis: Analysis }) {
         ))}
       </div>
 
-      <div className="mt-3 space-y-2.5">
-        {analysis.responses.map((r) => {
+      <div className="mt-4 space-y-3">
+        {analysis.responses.map((r, i) => {
           const wording = (tone && r.toneVariants[tone]) || r.wording;
           return (
-            <div key={r.id} className="rounded-xl bg-muted/60 p-3">
-              <p className="text-xs font-semibold text-primary">{r.label}</p>
-              <p className="mt-1.5 text-sm leading-relaxed">{wording}</p>
-              <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">{r.tradeOff}</p>
-              <CopyButton className="mt-2" value={wording} label="Copy" />
-            </div>
+            <article
+              key={r.id}
+              className="animate-rise rounded-xl border border-border/80 bg-background/60 p-4"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <h3 className="text-sm font-semibold">{r.label}</h3>
+              <p className="mt-2 rounded-xl bg-muted/70 p-3 text-sm leading-relaxed">{wording}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                <span className="font-medium text-foreground">Likely effect: </span>
+                {r.likelyEffect}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                <span className="font-medium text-foreground">Trade-off: </span>
+                {r.tradeOff}
+              </p>
+              <CopyButton className="mt-3" value={wording} label="Copy response" />
+            </article>
           );
         })}
       </div>
@@ -252,7 +335,7 @@ function CopyButton({
   value: string;
   label: string;
   className?: string;
-  variant?: "outline" | "secondary" | "ghost";
+  variant?: "outline" | "secondary";
   full?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
@@ -261,7 +344,7 @@ function CopyButton({
       type="button"
       variant={variant}
       size="sm"
-      className={cn("rounded-full text-xs", full && "h-11 w-full", className)}
+      className={cn("rounded-full text-xs", full && "w-full", className)}
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(value);
@@ -275,5 +358,29 @@ function CopyButton({
       {copied ? <Check className="mr-1.5 h-3.5 w-3.5" /> : <Copy className="mr-1.5 h-3.5 w-3.5" />}
       {copied ? "Copied" : label}
     </Button>
+  );
+}
+
+function Section({
+  n,
+  title,
+  icon,
+  children,
+}: {
+  n: number;
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="animate-rise card-surface p-5" style={{ animationDelay: `${n * 40}ms` }}>
+      <div className="mb-3 flex items-center gap-2">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-accent-foreground">
+          {icon}
+        </span>
+        <h2 className="text-base font-semibold">{title}</h2>
+      </div>
+      {children}
+    </section>
   );
 }

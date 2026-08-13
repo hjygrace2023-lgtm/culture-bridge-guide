@@ -18,7 +18,7 @@ export function BottomNav() {
       aria-label="Main"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-card/90 backdrop-blur-md"
     >
-      <ul className="mx-auto flex max-w-xl items-stretch justify-between gap-1 px-2 py-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] sm:px-5">
+      <ul className="mx-auto flex max-w-3xl items-stretch justify-between px-2 py-1.5 sm:px-6">
         {items.map((item) => {
           const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
           const Icon = item.icon;
@@ -27,7 +27,7 @@ export function BottomNav() {
               <Link
                 to={item.to}
                 className={cn(
-                  "flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-medium transition-all duration-200 sm:text-[11px]",
+                  "flex flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] font-medium transition-all duration-200",
                   active
                     ? "bg-accent text-accent-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
