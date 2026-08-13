@@ -202,3 +202,47 @@
   animation: cl-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+
+/* ------------------------------------------------------------------ bubbles */
+/* Conversational colour coding: the user's own words vs. suggested wording. */
+
+@utility bubble-user {
+  background-color: color-mix(in oklch, var(--color-accent) 78%, var(--color-card));
+  color: var(--color-accent-foreground);
+  border: 1px solid color-mix(in oklch, var(--color-accent) 60%, var(--color-border));
+}
+
+@utility bubble-assistant {
+  background-color: color-mix(in oklch, var(--color-sand) 62%, var(--color-card));
+  color: var(--color-sand-foreground);
+  border: 1px solid color-mix(in oklch, var(--color-sand) 55%, var(--color-border));
+}
+
+/* -------------------------------------------------------------- background */
+/*
+ * Original abstract motif: open arcs, short strokes and dots suggesting
+ * overlapping conversation lines. Tiled, fixed, and kept at very low opacity
+ * so body text contrast is untouched.
+ */
+@utility culture-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+  background-color: var(--color-background);
+  background-repeat: repeat;
+  background-size: 120px 120px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%2306464f' stroke-opacity='0.085' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M14 26c6-8 18-8 24 0'/%3E%3Cpath d='M78 18c8 4 10 14 4 20'/%3E%3Cpath d='M96 62c-7-5-7-16 0-21'/%3E%3Cpath d='M30 92c6 7 18 7 25 0'/%3E%3Cpath d='M58 54c5-6 14-5 18 2'/%3E%3Cpath d='M10 68h12'/%3E%3Cpath d='M100 104h11'/%3E%3Cpath d='M44 12h9'/%3E%3C/g%3E%3Cg fill='%2306464f' fill-opacity='0.07'%3E%3Ccircle cx='66' cy='96' r='2.1'/%3E%3Ccircle cx='20' cy='48' r='1.7'/%3E%3Ccircle cx='104' cy='34' r='1.9'/%3E%3Ccircle cx='86' cy='80' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
