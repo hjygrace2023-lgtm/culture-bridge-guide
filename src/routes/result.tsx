@@ -97,6 +97,13 @@ function ResultPage() {
       )}
 
       <Section n={1} title="What was literally communicated" icon={<Eye className="h-4 w-4" />}>
+        {analysis.input.exactWords?.trim() && (
+          <div className="mb-3">
+            <Bubble side="assistant" label="Their words">
+              {analysis.input.exactWords.trim()}
+            </Bubble>
+          </div>
+        )}
         <p className="text-sm leading-relaxed text-muted-foreground">{analysis.literalMeaning}</p>
       </Section>
 
@@ -307,7 +314,9 @@ function ResponseList({ analysis }: { analysis: Analysis }) {
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <h3 className="text-sm font-semibold">{r.label}</h3>
-              <p className="mt-2 rounded-xl bg-muted/70 p-3 text-sm leading-relaxed">{wording}</p>
+              <div className="mt-2">
+                <Bubble side="user">{wording}</Bubble>
+              </div>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                 <span className="font-medium text-foreground">Likely effect: </span>
                 {r.likelyEffect}
