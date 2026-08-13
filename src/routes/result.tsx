@@ -1,3 +1,4 @@
+import { Bubble } from "@/components/ui/bubble";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
