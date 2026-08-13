@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, Loader2, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { analyseSituation } from "@/lib/analysis/engine";
 import { getDraftInput, setCurrentAnalysis, setDraftInput } from "@/lib/analysis/storage";
+import { CultureContextChip } from "@/components/culture/context-chip";
+import { useCultureContext } from "@/lib/culture/store";
 import {
   FORMAT_LABEL,
   OUTCOME_LABEL,
@@ -18,12 +20,16 @@ import {
 } from "@/lib/analysis/types";
 import { cn } from "@/lib/utils";
 
+type AnalyseSearch = { region?: string; example?: boolean; edit?: boolean };
+
 export const Route = createFileRoute("/analyse")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    region: typeof search["region"] === "string" ? (search["region"] as string) : undefined,
-    example: search["example"] === true || search["example"] === "true" ? true : undefined,
-    edit: search["edit"] === true || search["edit"] === "true" ? true : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): AnalyseSearch => {
+    const out: AnalyseSearch = {};
+    if (typeof search["region"] === "string") out.region = search["region"];
+    if (search["example"] === true || search["example"] === "true") out.example = true;
+    if (search["edit"] === true || search["edit"] === "true") out.edit = true;
+    return out;
+  },
   head: () => ({
     meta: [
       { title: "Analyse a situation — CultureLens" },
@@ -44,17 +50,22 @@ const EXAMPLE: SituationInput = {
   exactWords: "You don't need to worry about it.",
   relationship: "teacher-student",
   format: "face-to-face",
-  toneAndBodyLanguage: "Friendly but brief; they were already packing up their bag.",
-  beforeAfter: "I had asked twice before about the marking timeline. They changed the subject afterwards.",
   desiredOutcome: "understand-meaning",
 };
 
 const PLACEHOLDER =
   "I asked my teacher about my grade before results were released. They said, “You don't need to worry about it.” I'm not sure whether that means my grade is good or that they did not want to answer.";
 
+/** Pull the first quoted fragment out of a description, if there is one. */
+export function extractQuoted(text: string): string | null {
+  const match = text.match(/[“"'‘„«]([^”"'’»]{3,240})[”"'’»]/);
+  return match?.[1]?.trim() || null;
+}
+
 function AnalysePage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
+  const { culture } = useCultureContext();
 
   const initial = (): SituationInput => {
     if (search.example) return EXAMPLE;
@@ -69,8 +80,25 @@ function AnalysePage() {
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
 
+  /* Autofill is one-way only: once the user edits a field by hand, we stop. */
+  const touchedWords = useRef(Boolean(initial().exactWords));
+  const touchedContext = useRef(Boolean(initial().socialContext));
+
   const set = <K extends keyof SituationInput>(key: K, value: SituationInput[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
+
+  /* Exact words ← quotation marks inside the description. */
+  useEffect(() => {
+    if (touchedWords.current) return;
+    const quoted = extractQuoted(form.situation);
+    setForm((prev) => (quoted && prev.exactWords !== quoted ? { ...prev, exactWords: quoted } : prev));
+  }, [form.situation]);
+
+  /* Social/cultural context ← the globally selected setting (never the whole description). */
+  useEffect(() => {
+    if (touchedContext.current || !culture) return;
+    setForm((prev) => (prev.socialContext === culture ? prev : { ...prev, socialContext: culture }));
+  }, [culture]);
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -101,18 +129,15 @@ function AnalysePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-5 pb-6 pt-8">
-      <div className="animate-rise">
+      <div className="animate-rise flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-3xl font-semibold">What happened?</h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Describe the exchange in your own words. Everything below the first box is optional — CultureLens works
-          without it, and background alone never determines what someone meant.
-        </p>
+        <CultureContextChip />
       </div>
 
-      <form onSubmit={onSubmit} className="animate-rise mt-6 space-y-4" style={{ animationDelay: "80ms" }}>
+      <form onSubmit={onSubmit} className="animate-rise mt-5 space-y-4" style={{ animationDelay: "80ms" }}>
         <div className="card-surface p-4 sm:p-5">
           <Label htmlFor="situation" className="text-sm font-semibold">
-            What happened <span className="text-primary">*</span>
+            Describe the exchange <span className="text-primary">*</span>
           </Label>
           <Textarea
             id="situation"
@@ -128,9 +153,10 @@ function AnalysePage() {
               type="button"
               onClick={() => {
                 setForm(EXAMPLE);
+                touchedWords.current = true;
                 setShowContext(true);
               }}
-              className="inline-flex items-center gap-1 font-medium text-primary transition-opacity hover:opacity-80"
+              className="inline-flex min-h-9 items-center gap-1 font-medium text-primary transition-opacity hover:opacity-80"
             >
               <Sparkles className="h-3.5 w-3.5" /> Fill the example
             </button>
@@ -151,7 +177,7 @@ function AnalysePage() {
           >
             <span>
               <span className="text-sm font-semibold">Add context</span>
-              <span className="ml-2 text-xs text-muted-foreground">optional — improves the analysis</span>
+              <span className="ml-2 text-xs text-muted-foreground">optional</span>
             </span>
             <ChevronDown
               className={cn("h-4 w-4 text-muted-foreground transition-transform duration-300", showContext && "rotate-180")}
@@ -166,40 +192,7 @@ function AnalysePage() {
           >
             <div className="overflow-hidden">
               <div className="space-y-4 border-t border-border/70 px-4 py-5 sm:px-5">
-                <Field label="Exact words used">
-                  <Input
-                    value={form.exactWords ?? ""}
-                    onChange={(e) => set("exactWords", e.target.value)}
-                    placeholder="“You don't need to worry about it.”"
-                  />
-                </Field>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="My cultural or communication background" hint="Optional">
-                    <Input
-                      value={form.myBackground ?? ""}
-                      onChange={(e) => set("myBackground", e.target.value)}
-                      placeholder="e.g. grew up speaking directly at home"
-                    />
-                  </Field>
-                  <Field label="Their cultural or communication background" hint="Optional">
-                    <Input
-                      value={form.theirBackground ?? ""}
-                      onChange={(e) => set("theirBackground", e.target.value)}
-                      placeholder="e.g. unsure / prefers understatement"
-                    />
-                  </Field>
-                </div>
-
-                <Field label="Country or social context">
-                  <Input
-                    value={form.socialContext ?? ""}
-                    onChange={(e) => set("socialContext", e.target.value)}
-                    placeholder="e.g. a university in Japan"
-                  />
-                </Field>
-
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-3">
                   <Field label="Relationship">
                     <Select
                       value={form.relationship ?? ""}
@@ -214,42 +207,38 @@ function AnalysePage() {
                       options={Object.entries(FORMAT_LABEL)}
                     />
                   </Field>
-                </div>
-
-                <Field label="Tone, facial expression, or body language">
-                  <Input
-                    value={form.toneAndBodyLanguage ?? ""}
-                    onChange={(e) => set("toneAndBodyLanguage", e.target.value)}
-                    placeholder="e.g. warm voice, but they looked away"
-                  />
-                </Field>
-
-                <Field label="What happened immediately before or after">
-                  <Textarea
-                    value={form.beforeAfter ?? ""}
-                    onChange={(e) => set("beforeAfter", e.target.value)}
-                    rows={3}
-                    className="resize-y rounded-xl text-sm"
-                    placeholder="e.g. they were leaving for another class"
-                  />
-                </Field>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="What you'd like to achieve">
+                  <Field label="Purpose">
                     <Select
                       value={form.desiredOutcome ?? ""}
                       onChange={(v) => set("desiredOutcome", (v || undefined) as DesiredOutcome | undefined)}
                       options={Object.entries(OUTCOME_LABEL)}
                     />
                   </Field>
-                  <Field label="Preferred language for the response">
-                    <Input
-                      value={form.responseLanguage ?? ""}
-                      onChange={(e) => set("responseLanguage", e.target.value)}
-                      placeholder="e.g. English, 日本語"
-                    />
-                  </Field>
                 </div>
+
+                <Field label="Exact words" hint="filled from quotation marks when we find them">
+                  <Textarea
+                    value={form.exactWords ?? ""}
+                    onChange={(e) => {
+                      touchedWords.current = true;
+                      set("exactWords", e.target.value);
+                    }}
+                    rows={2}
+                    className="resize-y rounded-xl text-sm"
+                    placeholder="“You don't need to worry about it.”"
+                  />
+                </Field>
+
+                <Field label="Social or cultural context" hint="filled from the setting you chose">
+                  <Input
+                    value={form.socialContext ?? ""}
+                    onChange={(e) => {
+                      touchedContext.current = true;
+                      set("socialContext", e.target.value);
+                    }}
+                    placeholder="e.g. a university in Japan"
+                  />
+                </Field>
               </div>
             </div>
           </div>
@@ -311,7 +300,7 @@ function Select({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition-shadow focus:ring-2 focus:ring-ring/40"
+      className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition-shadow focus:ring-2 focus:ring-ring/40"
     >
       <option value="">Not specified</option>
       {options.map(([key, label]) => (
