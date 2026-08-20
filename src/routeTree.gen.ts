@@ -15,6 +15,7 @@ import { Route as AnalyseRouteImport } from './routes/analyse'
 import { Route as ComposeRouteImport } from './routes/compose'
 import { Route as ResultRouteImport } from './routes/result'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as ReviewIndexRouteImport } from './routes/review.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const SavedRoute = SavedRouteImport.update({
   path: '/saved',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewIndexRoute = ReviewIndexRouteImport.update({
+  id: '/review/',
+  path: '/review/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/review/': typeof ReviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/review': typeof ReviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,14 +79,24 @@ export interface FileRoutesById {
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/review/': typeof ReviewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/analyse' | '/compose' | '/result' | '/saved'
+  fullPaths:
+    '/' | '/about' | '/analyse' | '/compose' | '/result' | '/saved' | '/review/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/analyse' | '/compose' | '/result' | '/saved'
+  to:
+    '/' | '/about' | '/analyse' | '/compose' | '/result' | '/saved' | '/review'
   id:
-    '__root__' | '/' | '/about' | '/analyse' | '/compose' | '/result' | '/saved'
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/analyse'
+    | '/compose'
+    | '/result'
+    | '/saved'
+    | '/review/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +106,7 @@ export interface RootRouteChildren {
   ComposeRoute: typeof ComposeRoute
   ResultRoute: typeof ResultRoute
   SavedRoute: typeof SavedRoute
+  ReviewIndexRoute: typeof ReviewIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -134,6 +153,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SavedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review/': {
+      id: '/review/'
+      path: '/review'
+      fullPath: '/review/'
+      preLoaderRoute: typeof ReviewIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -144,6 +170,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComposeRoute: ComposeRoute,
   ResultRoute: ResultRoute,
   SavedRoute: SavedRoute,
+  ReviewIndexRoute: ReviewIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
