@@ -15,6 +15,9 @@ import { Route as AnalyseRouteImport } from './routes/analyse'
 import { Route as ComposeRouteImport } from './routes/compose'
 import { Route as ResultRouteImport } from './routes/result'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as ReviewIndexRouteImport } from './routes/review.index'
+import { Route as ReviewIdFlashcardsRouteImport } from './routes/review.$id.flashcards'
+import { Route as ReviewIdQuizRouteImport } from './routes/review.$id.quiz'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +49,21 @@ const SavedRoute = SavedRouteImport.update({
   path: '/saved',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewIndexRoute = ReviewIndexRouteImport.update({
+  id: '/review/',
+  path: '/review/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewIdFlashcardsRoute = ReviewIdFlashcardsRouteImport.update({
+  id: '/review/$id/flashcards',
+  path: '/review/$id/flashcards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewIdQuizRoute = ReviewIdQuizRouteImport.update({
+  id: '/review/$id/quiz',
+  path: '/review/$id/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +72,9 @@ export interface FileRoutesByFullPath {
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/review/': typeof ReviewIndexRoute
+  '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
+  '/review/$id/quiz': typeof ReviewIdQuizRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +83,9 @@ export interface FileRoutesByTo {
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/review': typeof ReviewIndexRoute
+  '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
+  '/review/$id/quiz': typeof ReviewIdQuizRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,14 +95,44 @@ export interface FileRoutesById {
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/review/': typeof ReviewIndexRoute
+  '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
+  '/review/$id/quiz': typeof ReviewIdQuizRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/analyse' | '/compose' | '/result' | '/saved'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/analyse'
+    | '/compose'
+    | '/result'
+    | '/saved'
+    | '/review/'
+    | '/review/$id/flashcards'
+    | '/review/$id/quiz'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/analyse' | '/compose' | '/result' | '/saved'
+  to:
+    | '/'
+    | '/about'
+    | '/analyse'
+    | '/compose'
+    | '/result'
+    | '/saved'
+    | '/review'
+    | '/review/$id/flashcards'
+    | '/review/$id/quiz'
   id:
-    '__root__' | '/' | '/about' | '/analyse' | '/compose' | '/result' | '/saved'
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/analyse'
+    | '/compose'
+    | '/result'
+    | '/saved'
+    | '/review/'
+    | '/review/$id/flashcards'
+    | '/review/$id/quiz'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +142,9 @@ export interface RootRouteChildren {
   ComposeRoute: typeof ComposeRoute
   ResultRoute: typeof ResultRoute
   SavedRoute: typeof SavedRoute
+  ReviewIndexRoute: typeof ReviewIndexRoute
+  ReviewIdFlashcardsRoute: typeof ReviewIdFlashcardsRoute
+  ReviewIdQuizRoute: typeof ReviewIdQuizRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -134,6 +191,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SavedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review/': {
+      id: '/review/'
+      path: '/review'
+      fullPath: '/review/'
+      preLoaderRoute: typeof ReviewIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review/$id/flashcards': {
+      id: '/review/$id/flashcards'
+      path: '/review/$id/flashcards'
+      fullPath: '/review/$id/flashcards'
+      preLoaderRoute: typeof ReviewIdFlashcardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review/$id/quiz': {
+      id: '/review/$id/quiz'
+      path: '/review/$id/quiz'
+      fullPath: '/review/$id/quiz'
+      preLoaderRoute: typeof ReviewIdQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -144,6 +222,9 @@ const rootRouteChildren: RootRouteChildren = {
   ComposeRoute: ComposeRoute,
   ResultRoute: ResultRoute,
   SavedRoute: SavedRoute,
+  ReviewIndexRoute: ReviewIndexRoute,
+  ReviewIdFlashcardsRoute: ReviewIdFlashcardsRoute,
+  ReviewIdQuizRoute: ReviewIdQuizRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Compass, Home, Layers, PenLine, BookOpen } from "lucide-react";
+import { Compass, Home, Layers, PenLine, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -7,7 +7,7 @@ const items = [
   { to: "/analyse", label: "Analyse", icon: Compass },
   { to: "/compose", label: "Compose", icon: PenLine },
   { to: "/saved", label: "Saved", icon: Layers },
-  { to: "/about", label: "Method", icon: BookOpen },
+  { to: "/review", label: "Review", icon: GraduationCap },
 ] as const;
 
 export function BottomNav() {

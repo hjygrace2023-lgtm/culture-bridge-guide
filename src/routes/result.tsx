@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Save,
   Scale,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getCurrentAnalysis } from "@/lib/analysis/storage";
@@ -267,6 +268,16 @@ function ResultPage() {
           }}
         >
           <Save className="mr-1.5 h-4 w-4" /> Save scenario
+        </Button>
+        <Button
+          variant="secondary"
+          className="rounded-full"
+          onClick={() => {
+            save(analysis);
+            navigate({ to: "/review/$id/flashcards", params: { id: analysis.id } });
+          }}
+        >
+          <GraduationCap className="mr-1.5 h-4 w-4" /> Review this scenario
         </Button>
         <Button className="rounded-full" onClick={() => navigate({ to: "/analyse" })}>
           <Plus className="mr-1.5 h-4 w-4" /> Start a new scenario
