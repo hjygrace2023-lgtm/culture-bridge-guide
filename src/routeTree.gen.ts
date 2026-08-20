@@ -17,6 +17,7 @@ import { Route as ResultRouteImport } from './routes/result'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as ReviewIndexRouteImport } from './routes/review.index'
 import { Route as ReviewIdFlashcardsRouteImport } from './routes/review.$id.flashcards'
+import { Route as ReviewIdQuizRouteImport } from './routes/review.$id.quiz'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const ReviewIdFlashcardsRoute = ReviewIdFlashcardsRouteImport.update({
   path: '/review/$id/flashcards',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewIdQuizRoute = ReviewIdQuizRouteImport.update({
+  id: '/review/$id/quiz',
+  path: '/review/$id/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/saved': typeof SavedRoute
   '/review/': typeof ReviewIndexRoute
   '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
+  '/review/$id/quiz': typeof ReviewIdQuizRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/saved': typeof SavedRoute
   '/review': typeof ReviewIndexRoute
   '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
+  '/review/$id/quiz': typeof ReviewIdQuizRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/saved': typeof SavedRoute
   '/review/': typeof ReviewIndexRoute
   '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
+  '/review/$id/quiz': typeof ReviewIdQuizRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/review/'
     | '/review/$id/flashcards'
+    | '/review/$id/quiz'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/review'
     | '/review/$id/flashcards'
+    | '/review/$id/quiz'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/review/'
     | '/review/$id/flashcards'
+    | '/review/$id/quiz'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   SavedRoute: typeof SavedRoute
   ReviewIndexRoute: typeof ReviewIndexRoute
   ReviewIdFlashcardsRoute: typeof ReviewIdFlashcardsRoute
+  ReviewIdQuizRoute: typeof ReviewIdQuizRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReviewIdFlashcardsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review/$id/quiz': {
+      id: '/review/$id/quiz'
+      path: '/review/$id/quiz'
+      fullPath: '/review/$id/quiz'
+      preLoaderRoute: typeof ReviewIdQuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   SavedRoute: SavedRoute,
   ReviewIndexRoute: ReviewIndexRoute,
   ReviewIdFlashcardsRoute: ReviewIdFlashcardsRoute,
+  ReviewIdQuizRoute: ReviewIdQuizRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
