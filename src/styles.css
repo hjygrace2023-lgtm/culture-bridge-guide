@@ -5,27 +5,26 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system definition.
+ * CultureLens design system — Swiss / editorial / poster.
  *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
+ * Rules of the system:
+ * - one neo-grotesk family, few weights (400 / 500 / 700 / 800)
+ * - near-black on warm off-white, with large flat saturated colour surfaces
+ * - restrained radii (10–20px), hard 2px rules instead of drop shadows
+ * - arrows, circles and oversized numerals instead of decorative icons
  *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ * To add a semantic colour: declare it in :root and register it in
+ * @theme inline as --color-<name>: var(--<name>).
  */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: 6px;
+  --radius-md: 10px;
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 28px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -59,6 +58,18 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Poster palette — used as large flat surfaces, one per section */
+  --color-yellow: var(--yellow);
+  --color-green: var(--green);
+  --color-coral: var(--coral);
+  --color-orange: var(--orange);
+  --color-pink: var(--pink);
+  --color-lime: var(--lime);
+  --color-ink: var(--foreground);
+  --color-paper: var(--background);
+
+  /* Legacy semantic aliases kept so existing markup inherits the new system */
   --color-sand: var(--sand);
   --color-sand-foreground: var(--sand-foreground);
   --color-clay: var(--clay);
@@ -71,93 +82,107 @@
   --shadow-lift: var(--shadow-lift);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
+
+  --ease-graphic: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 
 :root {
-  --radius: 0.9rem;
-  --background: oklch(0.985 0.008 85);
-  --foreground: oklch(0.26 0.02 190);
-  --card: oklch(0.997 0.004 95);
-  --card-foreground: oklch(0.26 0.02 190);
-  --popover: oklch(0.997 0.004 95);
-  --popover-foreground: oklch(0.26 0.02 190);
-  --primary: oklch(0.52 0.09 192);
-  --primary-foreground: oklch(0.99 0.005 95);
-  --secondary: oklch(0.945 0.018 90);
-  --secondary-foreground: oklch(0.32 0.03 190);
-  --muted: oklch(0.955 0.012 88);
-  --muted-foreground: oklch(0.51 0.02 200);
-  --accent: oklch(0.925 0.04 190);
-  --accent-foreground: oklch(0.32 0.05 195);
-  --destructive: oklch(0.55 0.16 28);
-  --destructive-foreground: oklch(0.99 0.005 95);
-  --border: oklch(0.9 0.014 90);
-  --input: oklch(0.9 0.014 90);
-  --ring: oklch(0.62 0.08 192);
-  --chart-1: oklch(0.55 0.09 192);
-  --chart-2: oklch(0.7 0.1 80);
-  --chart-3: oklch(0.62 0.09 30);
-  --chart-4: oklch(0.6 0.07 280);
-  --chart-5: oklch(0.66 0.1 150);
-  --sidebar: oklch(0.975 0.01 88);
-  --sidebar-foreground: oklch(0.26 0.02 190);
-  --sidebar-primary: oklch(0.52 0.09 192);
-  --sidebar-primary-foreground: oklch(0.99 0.005 95);
-  --sidebar-accent: oklch(0.93 0.03 190);
-  --sidebar-accent-foreground: oklch(0.32 0.05 195);
-  --sidebar-border: oklch(0.9 0.014 90);
-  --sidebar-ring: oklch(0.62 0.08 192);
+  --radius: 14px;
 
-  /* CultureLens semantic extras */
-  --sand: oklch(0.94 0.03 82);
-  --sand-foreground: oklch(0.36 0.05 70);
-  --clay: oklch(0.93 0.045 45);
-  --clay-foreground: oklch(0.42 0.08 40);
-  --sage: oklch(0.93 0.04 150);
-  --sage-foreground: oklch(0.38 0.06 155);
-  --lilac: oklch(0.93 0.035 300);
-  --lilac-foreground: oklch(0.4 0.07 300);
-  --shadow-card: 0 1px 2px oklch(0.4 0.03 190 / 6%), 0 12px 28px -18px oklch(0.4 0.03 190 / 35%);
-  --shadow-lift: 0 2px 4px oklch(0.4 0.03 190 / 7%), 0 22px 44px -24px oklch(0.4 0.03 190 / 42%);
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
-  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  /* base */
+  --background: oklch(0.958 0.003 100);
+  --foreground: oklch(0.16 0 0);
+  --card: oklch(0.995 0.002 100);
+  --card-foreground: oklch(0.16 0 0);
+  --popover: oklch(0.995 0.002 100);
+  --popover-foreground: oklch(0.16 0 0);
+
+  /* poster colours */
+  --yellow: oklch(0.875 0.166 90);
+  --green: oklch(0.655 0.176 148);
+  --coral: oklch(0.645 0.196 30);
+  --orange: oklch(0.75 0.175 60);
+  --pink: oklch(0.775 0.128 340);
+  --lime: oklch(0.925 0.215 116);
+
+  --primary: oklch(0.16 0 0);
+  --primary-foreground: oklch(0.985 0.002 100);
+  --secondary: oklch(0.915 0.004 100);
+  --secondary-foreground: oklch(0.16 0 0);
+  --muted: oklch(0.925 0.003 100);
+  --muted-foreground: oklch(0.5 0.004 100);
+  --accent: var(--yellow);
+  --accent-foreground: oklch(0.16 0 0);
+  --destructive: oklch(0.575 0.2 29);
+  --destructive-foreground: oklch(0.985 0.002 100);
+  --border: oklch(0.16 0 0 / 14%);
+  --input: oklch(0.16 0 0 / 22%);
+  --ring: oklch(0.16 0 0 / 55%);
+
+  --chart-1: var(--coral);
+  --chart-2: var(--yellow);
+  --chart-3: var(--green);
+  --chart-4: var(--pink);
+  --chart-5: var(--orange);
+
+  --sidebar: oklch(0.995 0.002 100);
+  --sidebar-foreground: oklch(0.16 0 0);
+  --sidebar-primary: oklch(0.16 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0.002 100);
+  --sidebar-accent: var(--yellow);
+  --sidebar-accent-foreground: oklch(0.16 0 0);
+  --sidebar-border: oklch(0.16 0 0 / 14%);
+  --sidebar-ring: oklch(0.16 0 0 / 55%);
+
+  /* Legacy names now point at the poster palette (kept muted enough for text) */
+  --sand: var(--yellow);
+  --sand-foreground: oklch(0.16 0 0);
+  --clay: var(--coral);
+  --clay-foreground: oklch(0.16 0 0);
+  --sage: var(--green);
+  --sage-foreground: oklch(0.99 0.002 100);
+  --lilac: var(--pink);
+  --lilac-foreground: oklch(0.16 0 0);
+
+  /* No glow, no soft SaaS shadows — offset ink instead */
+  --shadow-card: none;
+  --shadow-lift: 6px 6px 0 var(--foreground);
+
+  --font-display: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --background: oklch(0.16 0 0);
+  --foreground: oklch(0.97 0.002 100);
+  --card: oklch(0.21 0 0);
+  --card-foreground: oklch(0.97 0.002 100);
+  --popover: oklch(0.21 0 0);
+  --popover-foreground: oklch(0.97 0.002 100);
+  --primary: oklch(0.97 0.002 100);
+  --primary-foreground: oklch(0.16 0 0);
+  --secondary: oklch(0.27 0 0);
+  --secondary-foreground: oklch(0.97 0.002 100);
+  --muted: oklch(0.27 0 0);
+  --muted-foreground: oklch(0.72 0.003 100);
+  --accent: var(--yellow);
+  --accent-foreground: oklch(0.16 0 0);
+  --destructive: oklch(0.65 0.2 29);
+  --destructive-foreground: oklch(0.16 0 0);
+  --border: oklch(1 0 0 / 18%);
+  --input: oklch(1 0 0 / 24%);
+  --ring: oklch(1 0 0 / 55%);
+  --sidebar: oklch(0.21 0 0);
+  --sidebar-foreground: oklch(0.97 0.002 100);
+  --sidebar-primary: oklch(0.97 0.002 100);
+  --sidebar-primary-foreground: oklch(0.16 0 0);
+  --sidebar-accent: var(--yellow);
+  --sidebar-accent-foreground: oklch(0.16 0 0);
+  --sidebar-border: oklch(1 0 0 / 18%);
+  --sidebar-ring: oklch(1 0 0 / 55%);
+  --shadow-lift: 6px 6px 0 oklch(0.97 0.002 100);
 }
 
 @layer base {
@@ -176,21 +201,82 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: -0.015em;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
 
+/* ------------------------------------------------------------- typography */
+
+/* Oversized poster headline: dramatic wrapping, very tight leading. */
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+/* Oversized numerals for statistics and step counters. */
+@utility numeral {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Small all-caps label used above headings and beside rules. */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------- structure */
+
+/* Flat editorial container: ink hairline, restrained radius, no shadow. */
 @utility card-surface {
   background-color: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-card);
+  border: 1.5px solid var(--color-foreground);
+  border-radius: var(--radius);
+  box-shadow: none;
 }
+
+/* Thick horizontal rule used to separate editorial blocks. */
+@utility rule-thick {
+  border: 0;
+  border-top: 3px solid var(--color-foreground);
+}
+
+/* Circular token used for culture markers, counters and step labels. */
+@utility token-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-foreground);
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------- animation */
 
 @keyframes cl-rise {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -199,14 +285,13 @@
 }
 
 @utility animate-rise {
-  animation: cl-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: cl-rise 0.3s var(--ease-graphic) both;
 }
 
-/* Gentle card turn used by the review flashcards. Motion-safe by design. */
 @keyframes cl-flip {
   from {
     opacity: 0;
-    transform: rotateX(-10deg) translateY(6px);
+    transform: rotateX(-8deg) translateY(6px);
   }
   to {
     opacity: 1;
@@ -216,49 +301,62 @@
 
 @utility animate-flip {
   transform-origin: top center;
-  animation: cl-flip 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: cl-flip 0.28s var(--ease-graphic) both;
+}
+
+/* Tracks drawing themselves in — the culture motif's signature motion. */
+@keyframes cl-track-draw {
+  from {
+    stroke-dashoffset: var(--track-length, 400);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@utility animate-track {
+  stroke-dasharray: var(--track-length, 400);
+  animation: cl-track-draw 0.35s var(--ease-graphic) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-rise,
-  .animate-flip {
+  .animate-flip,
+  .animate-track {
     animation: none;
   }
 }
-
-
 
 /* ------------------------------------------------------------------ bubbles */
 /* Conversational colour coding: the user's own words vs. suggested wording. */
 
 @utility bubble-user {
-  background-color: color-mix(in oklch, var(--color-accent) 78%, var(--color-card));
-  color: var(--color-accent-foreground);
-  border: 1px solid color-mix(in oklch, var(--color-accent) 60%, var(--color-border));
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+  border: 1.5px solid var(--color-foreground);
 }
 
 @utility bubble-assistant {
-  background-color: color-mix(in oklch, var(--color-sand) 62%, var(--color-card));
-  color: var(--color-sand-foreground);
-  border: 1px solid color-mix(in oklch, var(--color-sand) 55%, var(--color-border));
+  background-color: var(--color-yellow);
+  color: var(--color-foreground);
+  border: 1.5px solid var(--color-foreground);
 }
 
 /* -------------------------------------------------------------- background */
 /*
- * Original abstract motif: open arcs, short strokes and dots suggesting
- * overlapping conversation lines. Tiled, fixed, and kept at very low opacity
- * so body text contrast is untouched.
+ * Culture-track motif: faint parallel lines that diverge and converge, with
+ * small markers. Tiled, fixed and very low contrast so text is untouched.
  */
 @utility culture-bg {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.55;
   background-color: var(--color-background);
   background-repeat: repeat;
-  background-size: 120px 120px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%2306464f' stroke-opacity='0.085' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M14 26c6-8 18-8 24 0'/%3E%3Cpath d='M78 18c8 4 10 14 4 20'/%3E%3Cpath d='M96 62c-7-5-7-16 0-21'/%3E%3Cpath d='M30 92c6 7 18 7 25 0'/%3E%3Cpath d='M58 54c5-6 14-5 18 2'/%3E%3Cpath d='M10 68h12'/%3E%3Cpath d='M100 104h11'/%3E%3Cpath d='M44 12h9'/%3E%3C/g%3E%3Cg fill='%2306464f' fill-opacity='0.07'%3E%3Ccircle cx='66' cy='96' r='2.1'/%3E%3Ccircle cx='20' cy='48' r='1.7'/%3E%3Ccircle cx='104' cy='34' r='1.9'/%3E%3Ccircle cx='86' cy='80' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%23080808' stroke-opacity='0.07' stroke-width='2'%3E%3Cpath d='M0 60h70c30 0 30 40 60 40h110'/%3E%3Cpath d='M0 78h60c40 0 40 60 80 60h100'/%3E%3Cpath d='M0 180h90c26 0 26-30 52-30h98'/%3E%3C/g%3E%3Cg fill='%23080808' fill-opacity='0.07'%3E%3Ccircle cx='70' cy='60' r='4'/%3E%3Ccircle cx='140' cy='138' r='4'/%3E%3Ccircle cx='196' cy='150' r='4'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 @media (prefers-reduced-motion: reduce) {
