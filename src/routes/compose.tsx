@@ -10,13 +10,13 @@ import { CultureContextChip } from "@/components/culture/context-chip";
 import { useCultureContext } from "@/lib/culture/store";
 import { RELATIONSHIP_LABEL, type Relationship } from "@/lib/analysis/types";
 import {
-  composeDrafts,
   inferFormat,
   FORMAT_CHIP_LABEL,
   type ComposeDraft,
   type ComposeFormat,
   type ComposeMode,
 } from "@/lib/compose/mock-compose";
+import { composeDraftsFn } from "@/lib/compose/ai.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/compose")({
@@ -75,20 +75,26 @@ function ComposePage() {
     }
     setError(null);
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setDrafts(
-      composeDrafts({
-        mode,
-        intent,
-        theirMessage,
-        relationship,
-        customRelationship,
-        format,
-        culture,
-      }),
-    );
-    lastSubmitted.current = { mode, intent, theirMessage };
-    setLoading(false);
+    try {
+      const result = await composeDraftsFn({
+        data: {
+          mode,
+          intent: intent.trim(),
+          ...(mode === "reply" ? { theirMessage: theirMessage.trim() } : {}),
+          ...(relationship ? { relationship } : {}),
+          ...(customRelationship.trim() ? { customRelationship: customRelationship.trim() } : {}),
+          format,
+          culture,
+        },
+      });
+      setDrafts(result);
+      lastSubmitted.current = { mode, intent, theirMessage };
+    } catch (err) {
+      setDrafts(null);
+      setError(err instanceof Error && err.message ? err.message : "The wording couldn't be drafted just now. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
