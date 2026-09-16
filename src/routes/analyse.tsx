@@ -267,7 +267,7 @@ function AnalysePage() {
 
         <p className="flex items-start gap-2 px-1 text-xs leading-relaxed text-muted-foreground">
           <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          Your text stays in this browser. Nothing is sent to a server or stored in an account in this version. Saved
+          What you write is sent securely to the AI that produces the analysis, and is not stored on our side. Saved
           scenarios live in your browser's local storage and you can delete them at any time.
         </p>
       </form>
