@@ -1,40 +1,40 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Compass, Home, Layers, PenLine, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+/** Restrained, typographic navigation — the content stays dominant. */
 const items = [
-  { to: "/", label: "Home", icon: Home },
-  { to: "/analyse", label: "Analyse", icon: Compass },
-  { to: "/compose", label: "Compose", icon: PenLine },
-  { to: "/saved", label: "Saved", icon: Layers },
-  { to: "/review", label: "Review", icon: GraduationCap },
+  { to: "/", label: "Home" },
+  { to: "/analyse", label: "Analyse" },
+  { to: "/compose", label: "Compose" },
+  { to: "/saved", label: "Saved" },
+  { to: "/review", label: "Review" },
 ] as const;
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <nav
-      aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-card/90 backdrop-blur-md"
-    >
-      <ul className="mx-auto flex max-w-3xl items-stretch justify-between px-2 py-1.5 sm:px-6">
-        {items.map((item) => {
+    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-foreground bg-background">
+      <ul className="mx-auto flex max-w-3xl items-stretch">
+        {items.map((item, i) => {
           const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-          const Icon = item.icon;
           return (
-            <li key={item.to} className="flex-1">
+            <li key={item.to} className={cn("flex-1", i > 0 && "border-l-2 border-foreground")}>
               <Link
                 to={item.to}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] font-medium transition-all duration-200",
-                  active
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  "flex h-14 flex-col items-center justify-center gap-1 text-[11px] font-bold uppercase tracking-[0.1em] transition-colors duration-200",
+                  active ? "bg-foreground text-background" : "text-foreground/70 hover:bg-yellow hover:text-foreground",
                 )}
               >
-                <Icon className={cn("h-[18px] w-[18px] transition-transform", active && "scale-110")} />
-                <span>{item.label}</span>
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "h-1.5 w-1.5 rounded-full",
+                    active ? "bg-yellow" : "bg-foreground/30",
+                  )}
+                />
+                {item.label}
               </Link>
             </li>
           );
