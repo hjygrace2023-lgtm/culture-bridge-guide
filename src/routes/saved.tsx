@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Layers, RotateCw, Shuffle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageHeading } from "@/components/layout/page-heading";
 import { setCurrentAnalysis, useSavedScenarios } from "@/lib/analysis/storage";
 import { PLAUSIBILITY_LABEL, type SavedScenario } from "@/lib/analysis/types";
 import { cn } from "@/lib/utils";

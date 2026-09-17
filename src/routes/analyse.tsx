@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { analyseSituation } from "@/lib/analysis/engine";
 import { getDraftInput, setCurrentAnalysis, setDraftInput } from "@/lib/analysis/storage";
 import { CultureContextChip } from "@/components/culture/context-chip";
+import { PageHeading } from "@/components/layout/page-heading";
 import { useCultureContext } from "@/lib/culture/store";
 import {
   FORMAT_LABEL,

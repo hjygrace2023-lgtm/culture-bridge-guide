@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Bubble } from "@/components/ui/bubble";
 import { CultureContextChip } from "@/components/culture/context-chip";
+import { PageHeading } from "@/components/layout/page-heading";
 import { useCultureContext } from "@/lib/culture/store";
 import { RELATIONSHIP_LABEL, type Relationship } from "@/lib/analysis/types";
 import {
