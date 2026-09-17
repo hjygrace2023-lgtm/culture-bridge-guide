@@ -26,31 +26,37 @@ function SavedPage() {
   const [mode, setMode] = useState<"list" | "cards">("list");
 
   return (
-    <div className="mx-auto max-w-2xl px-5 pb-8 pt-8">
-      <div className="animate-rise flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-3xl font-semibold">Saved scenarios</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Stored in this browser only. No account, no upload.
-          </p>
+    <div className="mx-auto max-w-2xl px-5 pb-8 pt-8 sm:px-8">
+      <PageHeading
+        eyebrow="Your own archive"
+        title={
+          <>
+            Saved
+            <br />
+            Scenarios
+          </>
+        }
+        lede="Stored in this browser only. No account, no upload."
+        tracks="parallel"
+      />
+
+      {scenarios.length > 0 && (
+        <div className="mt-5 flex border-2 border-foreground">
+          {(["list", "cards"] as const).map((m, i) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={cn(
+                "flex-1 px-4 py-2.5 font-display text-xs font-bold uppercase tracking-[0.08em] transition-colors",
+                i > 0 && "border-l-2 border-foreground",
+                mode === m ? "bg-foreground text-background" : "hover:bg-yellow",
+              )}
+            >
+              {m === "list" ? "List" : "Flashcards"}
+            </button>
+          ))}
         </div>
-        {scenarios.length > 0 && (
-          <div className="flex rounded-full bg-muted p-1">
-            {(["list", "cards"] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                className={cn(
-                  "rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
-                  mode === m ? "bg-card text-foreground shadow-card" : "text-muted-foreground",
-                )}
-              >
-                {m === "list" ? "List" : "Flashcards"}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      )}
 
       {!hydrated ? (
         <div className="mt-6 space-y-3">

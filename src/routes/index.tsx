@@ -81,7 +81,17 @@ function Home() {
   );
 }
 
-function Tile({ to, color, label, number }: { to: string; color: string; label: string; number: string }) {
+function Tile({
+  to,
+  color,
+  label,
+  number,
+}: {
+  to: "/compose" | "/saved" | "/review";
+  color: string;
+  label: string;
+  number: string;
+}) {
   return (
     <Link
       to={to}
