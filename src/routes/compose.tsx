@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Bubble } from "@/components/ui/bubble";
 import { CultureContextChip } from "@/components/culture/context-chip";
+import { PageHeading } from "@/components/layout/page-heading";
 import { useCultureContext } from "@/lib/culture/store";
 import { RELATIONSHIP_LABEL, type Relationship } from "@/lib/analysis/types";
 import {
@@ -98,11 +99,19 @@ function ComposePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-5 pb-8 pt-8">
-      <div className="animate-rise flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-3xl font-semibold">Organise your language</h1>
-        <CultureContextChip />
-      </div>
+    <div className="mx-auto max-w-2xl px-5 pb-8 pt-8 sm:px-8">
+      <PageHeading
+        eyebrow="Say it well"
+        title={
+          <>
+            Organise
+            <br />
+            Your Language
+          </>
+        }
+        aside={<CultureContextChip />}
+        tracks="converge"
+      />
 
       {/* Segmented control: the two modes are the primary division of this page. */}
       <div

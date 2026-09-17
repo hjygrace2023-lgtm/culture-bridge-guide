@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { analyseSituation } from "@/lib/analysis/engine";
 import { getDraftInput, setCurrentAnalysis, setDraftInput } from "@/lib/analysis/storage";
 import { CultureContextChip } from "@/components/culture/context-chip";
+import { PageHeading } from "@/components/layout/page-heading";
 import { useCultureContext } from "@/lib/culture/store";
 import {
   FORMAT_LABEL,
@@ -128,11 +129,19 @@ function AnalysePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-5 pb-6 pt-8">
-      <div className="animate-rise flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-3xl font-semibold">What happened?</h1>
-        <CultureContextChip />
-      </div>
+    <div className="mx-auto max-w-2xl px-5 pb-6 pt-8 sm:px-8">
+      <PageHeading
+        eyebrow="Step one"
+        title={
+          <>
+            What
+            <br />
+            Happened?
+          </>
+        }
+        aside={<CultureContextChip />}
+        tracks="diverge"
+      />
 
       <form onSubmit={onSubmit} className="animate-rise mt-5 space-y-4" style={{ animationDelay: "80ms" }}>
         <div className="card-surface p-4 sm:p-5">
