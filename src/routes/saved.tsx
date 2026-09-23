@@ -38,7 +38,6 @@ function SavedPage() {
           </>
         }
         lede="Stored in this browser only. No account, no upload."
-        tracks="parallel"
       />
 
       {scenarios.length > 0 && (

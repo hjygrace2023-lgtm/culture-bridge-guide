@@ -10,11 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AnalyseRouteImport } from './routes/analyse'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ComposeRouteImport } from './routes/compose'
 import { Route as ResultRouteImport } from './routes/result'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as ReviewIndexRouteImport } from './routes/review.index'
 import { Route as ReviewIdFlashcardsRouteImport } from './routes/review.$id.flashcards'
 import { Route as ReviewIdQuizRouteImport } from './routes/review.$id.quiz'
@@ -22,6 +25,10 @@ import { Route as ReviewIdQuizRouteImport } from './routes/review.$id.quiz'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -32,6 +39,11 @@ const AboutRoute = AboutRouteImport.update({
 const AnalyseRoute = AnalyseRouteImport.update({
   id: '/analyse',
   path: '/analyse',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComposeRoute = ComposeRouteImport.update({
@@ -48,6 +60,11 @@ const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ReviewIndexRoute = ReviewIndexRouteImport.update({
   id: '/review/',
@@ -69,9 +86,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/analyse': typeof AnalyseRoute
+  '/auth': typeof AuthRoute
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/review/': typeof ReviewIndexRoute
   '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
   '/review/$id/quiz': typeof ReviewIdQuizRoute
@@ -80,9 +99,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/analyse': typeof AnalyseRoute
+  '/auth': typeof AuthRoute
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/review': typeof ReviewIndexRoute
   '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
   '/review/$id/quiz': typeof ReviewIdQuizRoute
@@ -90,11 +111,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/analyse': typeof AnalyseRoute
+  '/auth': typeof AuthRoute
   '/compose': typeof ComposeRoute
   '/result': typeof ResultRoute
   '/saved': typeof SavedRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/review/': typeof ReviewIndexRoute
   '/review/$id/flashcards': typeof ReviewIdFlashcardsRoute
   '/review/$id/quiz': typeof ReviewIdQuizRoute
@@ -105,9 +129,11 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/analyse'
+    | '/auth'
     | '/compose'
     | '/result'
     | '/saved'
+    | '/account'
     | '/review/'
     | '/review/$id/flashcards'
     | '/review/$id/quiz'
@@ -116,20 +142,25 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/analyse'
+    | '/auth'
     | '/compose'
     | '/result'
     | '/saved'
+    | '/account'
     | '/review'
     | '/review/$id/flashcards'
     | '/review/$id/quiz'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
     | '/analyse'
+    | '/auth'
     | '/compose'
     | '/result'
     | '/saved'
+    | '/_authenticated/account'
     | '/review/'
     | '/review/$id/flashcards'
     | '/review/$id/quiz'
@@ -137,8 +168,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AnalyseRoute: typeof AnalyseRoute
+  AuthRoute: typeof AuthRoute
   ComposeRoute: typeof ComposeRoute
   ResultRoute: typeof ResultRoute
   SavedRoute: typeof SavedRoute
@@ -156,6 +189,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -168,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/analyse'
       fullPath: '/analyse'
       preLoaderRoute: typeof AnalyseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compose': {
@@ -190,6 +237,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/saved'
       preLoaderRoute: typeof SavedRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/review/': {
       id: '/review/'
@@ -215,10 +269,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AnalyseRoute: AnalyseRoute,
+  AuthRoute: AuthRoute,
   ComposeRoute: ComposeRoute,
   ResultRoute: ResultRoute,
   SavedRoute: SavedRoute,

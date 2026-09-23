@@ -110,7 +110,6 @@ function ComposePage() {
           </>
         }
         aside={<CultureContextChip />}
-        tracks="converge"
       />
 
       {/* Segmented control: the two modes are the primary division of this page. */}
