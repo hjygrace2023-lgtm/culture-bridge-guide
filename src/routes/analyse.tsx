@@ -140,7 +140,6 @@ function AnalysePage() {
           </>
         }
         aside={<CultureContextChip />}
-        tracks="diverge"
       />
 
       <form onSubmit={onSubmit} className="animate-rise mt-5 space-y-4" style={{ animationDelay: "80ms" }}>

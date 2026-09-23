@@ -18,7 +18,7 @@ export interface HistoryEntry {
   kind: string;
   title: string;
   createdAt: string;
-  payload: unknown;
+  payload: string;
 }
 
 export const getProfileFn = createServerFn({ method: "GET" })
@@ -79,14 +79,14 @@ export const listHistoryFn = createServerFn({ method: "GET" })
       kind: row.kind,
       title: row.title,
       createdAt: row.created_at,
-      payload: row.payload,
+      payload: JSON.stringify(row.payload ?? {}),
     }));
   });
 
 const HistoryInput = z.object({
   kind: z.enum(["analyse", "compose"]),
   title: z.string().trim().min(1).max(160),
-  payload: z.unknown(),
+  payload: z.string().max(200000),
 });
 
 export const saveHistoryFn = createServerFn({ method: "POST" })
@@ -100,7 +100,7 @@ export const saveHistoryFn = createServerFn({ method: "POST" })
         user_id: userId,
         kind: data.kind,
         title: data.title,
-        payload: (data.payload ?? {}) as never,
+        payload: JSON.parse(data.payload) as never,
       })
       .select("id")
       .single();
