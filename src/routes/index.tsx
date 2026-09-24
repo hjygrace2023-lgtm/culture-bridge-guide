@@ -5,13 +5,13 @@ import { CulturePicker } from "@/components/culture/culture-picker";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CultureLens — Understand what was meant, not just what was said" },
+      { title: "CultureLens — harmony in every difference" },
       {
         name: "description",
         content:
           "CultureLens helps you explore several plausible readings of an intercultural exchange and choose a response that fits your goal.",
       },
-      { property: "og:title", content: "CultureLens — an AI cultural translator" },
+      { property: "og:title", content: "CultureLens — harmony in every difference" },
       {
         property: "og:description",
         content: "Separate literal meaning from implied meaning, then decide how you want to respond.",
@@ -24,17 +24,15 @@ export const Route = createFileRoute("/")({
 function Home() {
   return (
     <div className="mx-auto max-w-5xl px-5 pb-16 pt-10 sm:px-8 sm:pt-16">
-      {/* Poster headline — typography does the work, wrapping is deliberate. */}
+      {/* Quiet editorial headline — large but not loud. */}
       <section className="animate-rise">
         <p className="eyebrow text-foreground/60">An AI cultural translator</p>
-        <h1 className="display-xl mt-4 text-[clamp(3rem,15vw,8.5rem)]">
-          Understand
+        <h1 className="display-xl mt-4 text-[clamp(2rem,6vw,3.5rem)] text-foreground">
+          harmony in
           <br />
-          <span className="bg-foreground px-2 text-background">What They</span>
-          <br />
-          Mean
+          every difference
         </h1>
-        <div className="mt-6 flex justify-end">
+        <div className="mt-8 flex justify-end">
           <Link
             to="/analyse"
             search={{}}
