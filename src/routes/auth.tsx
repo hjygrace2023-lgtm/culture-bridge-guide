@@ -84,7 +84,7 @@ function AuthPage() {
             In
           </>
         }
-        lede="CultureLens works fully without an account. Signing in only keeps your history across devices."
+        lede="Keep your history across devices."
       />
 
       <div className="mt-5 flex border-2 border-foreground">

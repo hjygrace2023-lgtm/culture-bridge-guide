@@ -63,15 +63,11 @@ function ComposePage() {
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (intent.trim().length < 10) {
-      setError(
-        mode === "request"
-          ? "Tell me a little more about what you'd like to request — a sentence is enough."
-          : "Tell me a little more about what your reply should get across.",
-      );
+      setError(mode === "request" ? "Add a sentence about your request." : "Add what your reply should convey.");
       return;
     }
     if (mode === "reply" && theirMessage.trim().length < 3) {
-      setError("Paste or summarise the message you received, so the reply can respond to it.");
+      setError("Add the message you received.");
       return;
     }
     setError(null);
@@ -104,9 +100,9 @@ function ComposePage() {
         eyebrow="Say it well"
         title={
           <>
-            Organise
+            Find the
             <br />
-            Your Language
+            Right Words
           </>
         }
         aside={<CultureContextChip />}
@@ -201,7 +197,7 @@ function ComposePage() {
 
           <div>
             <Label className="text-xs font-medium text-muted-foreground">
-              Format {guess.confident ? "· inferred" : "· best guess, please check"}
+              Format
             </Label>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {FORMATS.map((f) => (
@@ -252,9 +248,6 @@ function ComposePage() {
           {drafts.map((d, i) => (
             <DraftCard key={d.id} draft={d} delay={i * 70} />
           ))}
-          <p className="pt-1 text-center text-[11px] leading-relaxed text-muted-foreground">
-            Wording that works in one setting may land differently in another. Adjust it in your own voice.
-          </p>
         </div>
       )}
     </div>

@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { CulturePicker } from "@/components/culture/culture-picker";
-import { CultureTracks } from "@/components/graphics/culture-tracks";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,10 +34,7 @@ function Home() {
           <br />
           Mean
         </h1>
-        <div className="mt-6 grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
-          <p className="max-w-sm text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Several readings of the same moment. No verdicts — you decide which one fits, and how to reply.
-          </p>
+        <div className="mt-6 flex justify-end">
           <Link
             to="/analyse"
             search={{}}
@@ -51,9 +47,8 @@ function Home() {
       </section>
 
       <hr className="rule-thick mt-10" />
-      <CultureTracks mode="diverge" count={4} className="h-14" markers />
 
-      <section className="mt-8">
+      <section className="mt-6">
         <CulturePicker />
       </section>
 
@@ -64,10 +59,7 @@ function Home() {
         <Tile to="/review" color="bg-lime" label="Review &amp; practise" number="04" />
       </section>
 
-      <section className="mt-6 flex flex-wrap items-center justify-between gap-4 border-2 border-foreground px-5 py-5">
-        <p className="max-w-sm text-sm leading-relaxed">
-          Not sure where to start? Walk through a worked example first.
-        </p>
+      <section className="mt-6 flex justify-end border-t-2 border-foreground pt-5">
         <Link
           to="/analyse"
           search={{ example: true }}
