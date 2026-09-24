@@ -105,11 +105,11 @@ function AnalysePage() {
     event.preventDefault();
     const situation = form.situation.trim();
     if (situation.length < 20) {
-      setError("Please describe what happened in a little more detail — at least a sentence or two.");
+      setError("Please add at least a sentence or two.");
       return;
     }
     if (situation.length > 4000) {
-      setError("That's longer than the analyser can handle. Please trim it to about 4000 characters.");
+      setError("Please keep this under 4,000 characters.");
       return;
     }
     setError(null);
@@ -224,7 +224,7 @@ function AnalysePage() {
                   </Field>
                 </div>
 
-                <Field label="Exact words" hint="filled from quotation marks when we find them">
+                <Field label="Exact words">
                   <Textarea
                     value={form.exactWords ?? ""}
                     onChange={(e) => {
@@ -237,7 +237,7 @@ function AnalysePage() {
                   />
                 </Field>
 
-                <Field label="Social or cultural context" hint="filled from the setting you chose">
+                <Field label="Social or cultural context">
                   <Input
                     value={form.socialContext ?? ""}
                     onChange={(e) => {
@@ -254,7 +254,7 @@ function AnalysePage() {
 
         {failed && (
           <p role="alert" className="card-surface animate-rise border-destructive/30 p-4 text-sm text-destructive">
-            The analysis couldn't be completed just now. Nothing was lost — please try again.
+            The analysis couldn't be completed. Please try again.
           </p>
         )}
 
@@ -275,8 +275,7 @@ function AnalysePage() {
 
         <p className="flex items-start gap-2 px-1 text-xs leading-relaxed text-muted-foreground">
           <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          What you write is sent securely to the AI that produces the analysis, and is not stored on our side. Saved
-          scenarios live in your browser's local storage and you can delete them at any time.
+          Sent securely for analysis. Saved scenarios stay in your browser unless you sign in.
         </p>
       </form>
     </div>

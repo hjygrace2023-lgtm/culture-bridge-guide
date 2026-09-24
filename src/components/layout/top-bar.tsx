@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Check, X } from "lucide-react";
+import { Check, UserRound, X } from "lucide-react";
 import { searchRegions } from "@/lib/analysis/regions";
 import { useCultureContext } from "@/lib/culture/store";
+import { useSession } from "@/lib/auth/session";
+import { Button } from "@/components/ui/button";
 
 /**
  * Restrained poster header: wordmark, a thick ink rule, and a minimal
@@ -13,6 +15,7 @@ export function TopBar() {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const { culture, setCulture } = useCultureContext();
+  const { session } = useSession();
 
   const results = useMemo(() => searchRegions(query), [query]);
 
@@ -35,7 +38,7 @@ export function TopBar() {
           <span className="ml-1 inline-flex h-6 items-center bg-foreground px-1.5 text-background">Lens</span>
         </Link>
 
-        <div ref={wrapRef} className="relative ml-auto w-full max-w-[13rem] sm:max-w-xs">
+        <div ref={wrapRef} className="relative ml-auto w-full max-w-[10rem] sm:max-w-xs">
           <input
             value={query}
             onChange={(e) => {
@@ -119,6 +122,12 @@ export function TopBar() {
             </div>
           )}
         </div>
+        <Button asChild variant="outline" size="sm" className="shrink-0 px-2.5 sm:px-3">
+          <Link to={session ? "/account" : "/auth"} aria-label={session ? "Open account" : "Sign in"}>
+            <UserRound className="h-4 w-4" />
+            <span className="hidden sm:inline">{session ? "Account" : "Sign in"}</span>
+          </Link>
+        </Button>
       </div>
     </header>
   );
