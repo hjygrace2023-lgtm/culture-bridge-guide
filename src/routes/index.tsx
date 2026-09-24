@@ -5,13 +5,13 @@ import { CulturePicker } from "@/components/culture/culture-picker";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CultureLens — Understand what was meant, not just what was said" },
+      { title: "CultureLens — harmony in every difference" },
       {
         name: "description",
         content:
           "CultureLens helps you explore several plausible readings of an intercultural exchange and choose a response that fits your goal.",
       },
-      { property: "og:title", content: "CultureLens — an AI cultural translator" },
+      { property: "og:title", content: "CultureLens — harmony in every difference" },
       {
         property: "og:description",
         content: "Separate literal meaning from implied meaning, then decide how you want to respond.",
