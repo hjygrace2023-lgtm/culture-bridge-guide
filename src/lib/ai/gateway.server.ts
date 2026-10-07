@@ -2,13 +2,13 @@
  * Server-only Lovable AI Gateway helper.
  *
  * All model calls go through here so the API key never leaves the server.
- * Uses the Responses API with strict structured output, always streaming
- * (reasoning runs can take a while; buffered calls get cut off).
+ * Uses the Chat Completions API with strict structured output, always
+ * streaming (buffered calls can get cut off).
  */
 
-const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/responses";
+const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
-export const AI_MODEL = "openai/gpt-6-astra";
+export const AI_MODEL = "google/gemini-3.8-flash";
 
 export class AiGatewayError extends Error {
   status: number;
@@ -45,14 +45,14 @@ export async function generateJson<T>(args: {
     },
     body: JSON.stringify({
       model: AI_MODEL,
-      instructions: args.system,
-      input: args.input,
+      messages: [
+        { role: "system", content: args.system },
+        { role: "user", content: args.input },
+      ],
       stream: true,
-      store: false,
-      reasoning: { effort: "low" },
-      text: {
-        format: {
-          type: "json_schema",
+      response_format: {
+        type: "json_schema",
+        json_schema: {
           name: args.schemaName,
           strict: true,
           schema: args.schema,
@@ -91,15 +91,10 @@ export async function generateJson<T>(args: {
       if (!payload || payload === "[DONE]") continue;
       try {
         const event = JSON.parse(payload) as {
-          type?: string;
-          delta?: string;
-          response?: { output_text?: string };
+          choices?: Array<{ delta?: { content?: string }; message?: { content?: string } }>;
         };
-        if (event.type === "response.output_text.delta" && typeof event.delta === "string") {
-          text += event.delta;
-        } else if (event.type === "response.completed" && event.response?.output_text) {
-          if (!text) text = event.response.output_text;
-        }
+        const delta = event.choices?.[0]?.delta?.content;
+        if (typeof delta === "string") text += delta;
       } catch {
         /* ignore keep-alive / partial frames */
       }
