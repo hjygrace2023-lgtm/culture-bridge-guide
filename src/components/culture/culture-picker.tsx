@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 import { REGION_NOTES, searchRegions } from "@/lib/analysis/regions";
@@ -9,6 +10,7 @@ import { cn } from "@/lib/utils";
  * Writes to the one shared store; every other surface reads from it.
  */
 export function CulturePicker() {
+  const { t } = useLocale();
   const { culture, setCulture, clearCulture } = useCultureContext();
   const [query, setQuery] = useState("");
 
@@ -20,7 +22,7 @@ export function CulturePicker() {
       <div className="flex items-baseline gap-3 border-b-2 border-foreground px-5 py-4 sm:px-6">
         <span className="token-circle h-7 w-7 bg-lime text-xs">1</span>
         <h2 className="font-display text-xl font-extrabold tracking-tight sm:text-2xl">
-          Which setting is this about?
+          {t("Which setting is this about?")}
         </h2>
       </div>
 
@@ -40,7 +42,7 @@ export function CulturePicker() {
                 setQuery("");
               }
             }}
-            placeholder="Type any country, region or setting"
+            placeholder={t("Type any country, region or setting")}
             aria-label="Search a country, region or setting"
             className="h-14 w-full border-0 border-b-2 border-foreground bg-transparent pr-10 font-display text-xl font-bold tracking-tight outline-none placeholder:text-foreground/35 sm:text-2xl"
           />
@@ -105,7 +107,7 @@ export function CulturePicker() {
               onClick={clearCulture}
               className="shrink-0 border-2 border-foreground px-2.5 py-1 text-[11px] font-bold transition-colors hover:bg-background"
             >
-              Clear
+              {t("Clear")}
             </button>
           </div>
           <p className="mt-2 max-w-lg text-xs leading-relaxed text-foreground/75">

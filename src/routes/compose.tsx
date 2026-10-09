@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Copy, Loader2, PenLine } from "lucide-react";
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/compose")({
 const FORMATS: ComposeFormat[] = ["email", "text", "in-person"];
 
 function ComposePage() {
+  const { t } = useLocale();
   const { culture } = useCultureContext();
   const [mode, setMode] = useState<ComposeMode>("request");
   const [intent, setIntent] = useState("");
@@ -97,12 +99,12 @@ function ComposePage() {
   return (
     <div className="mx-auto max-w-2xl px-5 pb-8 pt-8 sm:px-8">
       <PageHeading
-        eyebrow="Say it well"
+        eyebrow={t("Say it well")}
         title={
           <>
-            Find the
+            {t("Find the")}
             <br />
-            Right Words
+            {t("Right Words")}
           </>
         }
         aside={<CultureContextChip />}
@@ -138,14 +140,14 @@ function ComposePage() {
         {mode === "reply" && (
           <div>
             <Label htmlFor="theirs" className="text-sm font-semibold">
-              What they said to you
+              {t("What they said to you")}
             </Label>
             <Textarea
               id="theirs"
               value={theirMessage}
               onChange={(e) => setTheirMessage(e.target.value)}
               rows={3}
-              placeholder="Paste their message, or summarise it."
+              placeholder={t("Paste their message, or summarise it.")}
               className="mt-2 resize-y rounded-xl text-sm leading-relaxed"
             />
           </div>
@@ -171,13 +173,13 @@ function ComposePage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <Label className="text-xs font-medium text-muted-foreground">Relationship</Label>
+            <Label className="text-xs font-medium text-muted-foreground">{t("Relationship")}</Label>
             <select
               value={relationship}
               onChange={(e) => setRelationship(e.target.value as Relationship | "")}
               className="mt-1.5 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring/40"
             >
-              <option value="">Not specified</option>
+              <option value="">{t("Not specified")}</option>
               {Object.entries(RELATIONSHIP_LABEL).map(([k, v]) => (
                 <option key={k} value={k}>
                   {k === "other" ? "Other (describe it)" : v}
@@ -188,7 +190,7 @@ function ComposePage() {
               <Input
                 value={customRelationship}
                 onChange={(e) => setCustomRelationship(e.target.value)}
-                placeholder="e.g. my landlord, my host family"
+                placeholder={t("e.g. my landlord, my host family")}
                 aria-label="Describe the relationship"
                 className="mt-2 h-11 rounded-xl text-sm"
               />
@@ -197,7 +199,7 @@ function ComposePage() {
 
           <div>
             <Label className="text-xs font-medium text-muted-foreground">
-              Format
+              {t("Format")}
             </Label>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {FORMATS.map((f) => (
@@ -228,7 +230,7 @@ function ComposePage() {
         <Button type="submit" disabled={loading} className="h-12 w-full rounded-full text-sm">
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Drafting options…
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t("Drafting options…")}
             </>
           ) : (
             <>
@@ -241,7 +243,7 @@ function ComposePage() {
       {drafts && (
         <div className="mt-5 space-y-3">
           {mode === "reply" && lastSubmitted.current?.theirMessage.trim() && (
-            <Bubble side="assistant" label="They said">
+            <Bubble side="assistant" label={t("They said")}>
               {lastSubmitted.current.theirMessage.trim()}
             </Bubble>
           )}
@@ -255,6 +257,7 @@ function ComposePage() {
 }
 
 function DraftCard({ draft, delay }: { draft: ComposeDraft; delay: number }) {
+  const { t } = useLocale();
   const [copied, setCopied] = useState(false);
   return (
     <article className="animate-rise space-y-2" style={{ animationDelay: `${delay}ms` }}>
@@ -263,11 +266,11 @@ function DraftCard({ draft, delay }: { draft: ComposeDraft; delay: number }) {
       </Bubble>
       <div className="ml-auto max-w-[92%] rounded-xl bg-muted/60 px-3.5 py-2.5 sm:max-w-[85%]">
         <p className="text-xs leading-relaxed text-muted-foreground">
-          <span className="font-medium text-foreground">Likely effect: </span>
+          <span className="font-medium text-foreground">{t("Likely effect: ")}</span>
           {draft.effect}
         </p>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-          <span className="font-medium text-foreground">Trade-off: </span>
+          <span className="font-medium text-foreground">{t("Trade-off: ")}</span>
           {draft.tradeOff}
         </p>
         <Button

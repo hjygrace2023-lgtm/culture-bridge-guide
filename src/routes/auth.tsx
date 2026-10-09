@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const { t } = useLocale();
   const navigate = useNavigate();
   const { session, loading } = useSession();
   const [mode, setMode] = useState<"in" | "up">("in");
@@ -76,15 +78,15 @@ function AuthPage() {
   return (
     <div className="mx-auto max-w-md px-5 pb-10 pt-8 sm:px-8">
       <PageHeading
-        eyebrow="Optional"
+        eyebrow={t("Optional")}
         title={
           <>
-            Sign
+            {t("Sign")}
             <br />
-            In
+            {t("In")}
           </>
         }
-        lede="Keep your history across devices."
+        lede={t("Keep your history across devices.")}
       />
 
       <div className="mt-5 flex border-2 border-foreground">
@@ -109,7 +111,7 @@ function AuthPage() {
       <form onSubmit={onSubmit} className="mt-5 space-y-4">
         <div>
           <Label htmlFor="email" className="text-xs font-bold uppercase tracking-[0.08em]">
-            Email
+            {t("Email")}
           </Label>
           <Input
             id="email"
@@ -123,7 +125,7 @@ function AuthPage() {
         </div>
         <div>
           <Label htmlFor="password" className="text-xs font-bold uppercase tracking-[0.08em]">
-            Password
+            {t("Password")}
           </Label>
           <Input
             id="password"
@@ -151,12 +153,12 @@ function AuthPage() {
       </form>
 
       <Button type="button" variant="outline" size="lg" onClick={onGoogle} className="mt-3 w-full">
-        Continue with Google
+        {t("Continue with Google")}
       </Button>
 
       <p className="mt-6 text-xs text-muted-foreground">
         <Link to="/" className="underline underline-offset-4">
-          Continue without an account →
+          {t("Continue without an account →")}
         </Link>
       </p>
     </div>
