@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { CulturePicker } from "@/components/culture/culture-picker";
@@ -22,15 +23,16 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { t } = useLocale();
   return (
     <div className="mx-auto max-w-5xl px-5 pb-16 pt-10 sm:px-8 sm:pt-16">
       {/* Quiet editorial headline — large but not loud. */}
       <section className="animate-rise">
-        <p className="eyebrow text-foreground/60">An AI cultural translator</p>
+        <p className="eyebrow text-foreground/60">{t("An AI cultural translator")}</p>
         <h1 className="display-xl mt-4 text-[clamp(2rem,6vw,3.5rem)] text-foreground">
-          harmony in
+          {t("harmony in")}
           <br />
-          every difference
+          {t("every difference")}
         </h1>
         <div className="mt-8 flex justify-end">
           <Link
@@ -38,7 +40,7 @@ function Home() {
             search={{}}
             className="group inline-flex items-center justify-between gap-6 border-2 border-foreground bg-coral px-6 py-5 font-display text-lg font-extrabold tracking-tight transition-transform duration-200 hover:-translate-y-1 sm:text-xl"
           >
-            Analyse a situation
+            {t("Analyse a situation")}
             <ArrowRight className="h-7 w-7 transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
         </div>
@@ -52,9 +54,9 @@ function Home() {
 
       {/* Secondary routes as flat colour blocks rather than SaaS cards. */}
       <section className="mt-6 grid gap-4 sm:grid-cols-3">
-        <Tile to="/compose" color="bg-green" label="Organise language" number="02" />
-        <Tile to="/saved" color="bg-pink" label="Saved scenarios" number="03" />
-        <Tile to="/review" color="bg-lime" label="Review &amp; practise" number="04" />
+        <Tile to="/compose" color="bg-green" label={t("Organise language")} number="02" />
+        <Tile to="/saved" color="bg-pink" label={t("Saved scenarios")} number="03" />
+        <Tile to="/review" color="bg-lime" label={t("Review & practise")} number="04" />
       </section>
 
       <section className="mt-6 flex justify-end border-t-2 border-foreground pt-5">
@@ -63,7 +65,7 @@ function Home() {
           search={{ example: true }}
           className="group inline-flex items-center gap-2 font-display text-base font-extrabold tracking-tight underline underline-offset-4"
         >
-          Try an example
+          {t("Try an example")}
           <ArrowUpRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </Link>
       </section>
@@ -82,6 +84,7 @@ function Tile({
   label: string;
   number: string;
 }) {
+  const { t } = useLocale();
   return (
     <Link
       to={to}

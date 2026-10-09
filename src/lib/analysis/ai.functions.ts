@@ -22,6 +22,7 @@ const InputSchema = z.object({
   beforeAfter: z.string().max(1000).optional(),
   desiredOutcome: z.string().max(60).optional(),
   responseLanguage: z.string().max(60).optional(),
+  outputLanguage: z.string().max(40).optional(),
 });
 
 const stringArray = { type: "array", items: { type: "string" } };
@@ -90,7 +91,7 @@ Method rules, which matter more than fluency:
 - title: 3-7 words naming the situation, no quotation marks.
 - Warm, plain, non-judgemental language. British spelling. Short sentences.`;
 
-function describe(input: SituationInput): string {
+function describe(input: SituationInput, outputLanguage?: string): string {
   const lines = [`Situation: ${input.situation}`];
   const add = (label: string, value?: string) => {
     if (value && value.trim()) lines.push(`${label}: ${value.trim()}`);
@@ -105,6 +106,7 @@ function describe(input: SituationInput): string {
   add("Tone and body language", input.toneAndBodyLanguage);
   add("What happened before or after", input.beforeAfter);
   add("Language for suggested responses", input.responseLanguage);
+  if (outputLanguage) lines.push(`Write every text field strictly in ${outputLanguage}, including the title. Suggested responses follow "Language for suggested responses" if given, otherwise ${outputLanguage}. Never mix languages.`);
   lines.push("Return the analysis as JSON matching the required schema.");
   return lines.join("\n");
 }
@@ -120,10 +122,11 @@ type ModelAnalysis = Omit<Analysis, "id" | "createdAt" | "input" | "interpretati
 export const analyseSituationFn = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => InputSchema.parse(data))
   .handler(async ({ data }): Promise<Analysis> => {
-    const input = data as SituationInput;
+    const { outputLanguage, ...rest } = data;
+    const input = rest as SituationInput;
     const result = await generateJson<ModelAnalysis>({
       system: SYSTEM,
-      input: describe(input),
+      input: describe(input, outputLanguage),
       schemaName: "culturelens_analysis",
       schema: SCHEMA,
     });

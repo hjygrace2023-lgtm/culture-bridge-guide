@@ -1,3 +1,4 @@
+import { aiLanguageName, useLocale } from "@/lib/i18n/store";
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, Loader2, Lock, Sparkles } from "lucide-react";
@@ -64,6 +65,7 @@ export function extractQuoted(text: string): string | null {
 }
 
 function AnalysePage() {
+  const { t, locale } = useLocale();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const { culture } = useCultureContext();
@@ -105,11 +107,11 @@ function AnalysePage() {
     event.preventDefault();
     const situation = form.situation.trim();
     if (situation.length < 20) {
-      setError("Please add at least a sentence or two.");
+      setError(t("Please add at least a sentence or two."));
       return;
     }
     if (situation.length > 4000) {
-      setError("Please keep this under 4,000 characters.");
+      setError(t("Please keep this under 4,000 characters."));
       return;
     }
     setError(null);
@@ -118,7 +120,7 @@ function AnalysePage() {
     try {
       const input = { ...form, situation };
       setDraftInput(input);
-      const analysis = await analyseSituation(input);
+      const analysis = await analyseSituation(input, aiLanguageName(locale));
       setCurrentAnalysis(analysis);
       navigate({ to: "/result" });
     } catch {
@@ -131,12 +133,12 @@ function AnalysePage() {
   return (
     <div className="mx-auto max-w-2xl px-5 pb-6 pt-8 sm:px-8">
       <PageHeading
-        eyebrow="Step one"
+        eyebrow={t("Step one")}
         title={
           <>
-            What
+            {t("What")}
             <br />
-            Happened?
+            {t("Happened?")}
           </>
         }
         aside={<CultureContextChip />}
@@ -145,7 +147,7 @@ function AnalysePage() {
       <form onSubmit={onSubmit} className="animate-rise mt-5 space-y-4" style={{ animationDelay: "80ms" }}>
         <div className="card-surface p-4 sm:p-5">
           <Label htmlFor="situation" className="text-sm font-semibold">
-            Describe the exchange <span className="text-primary">*</span>
+            {t("Describe the exchange")} <span className="text-primary">*</span>
           </Label>
           <Textarea
             id="situation"
@@ -166,7 +168,7 @@ function AnalysePage() {
               }}
               className="inline-flex min-h-9 items-center gap-1 font-medium text-primary transition-opacity hover:opacity-80"
             >
-              <Sparkles className="h-3.5 w-3.5" /> Fill the example
+              <Sparkles className="h-3.5 w-3.5" /> {t("Fill the example")}
             </button>
           </div>
           {error && (
@@ -184,8 +186,8 @@ function AnalysePage() {
             className="flex w-full items-center justify-between px-4 py-4 text-left transition-colors hover:bg-muted/50 sm:px-5"
           >
             <span>
-              <span className="text-sm font-semibold">Add context</span>
-              <span className="ml-2 text-xs text-muted-foreground">optional</span>
+              <span className="text-sm font-semibold">{t("Add context")}</span>
+              <span className="ml-2 text-xs text-muted-foreground">{t("optional")}</span>
             </span>
             <ChevronDown
               className={cn("h-4 w-4 text-muted-foreground transition-transform duration-300", showContext && "rotate-180")}
@@ -201,21 +203,21 @@ function AnalysePage() {
             <div className="overflow-hidden">
               <div className="space-y-4 border-t border-border/70 px-4 py-5 sm:px-5">
                 <div className="grid gap-4 sm:grid-cols-3">
-                  <Field label="Relationship">
+                  <Field label={t("Relationship")}>
                     <Select
                       value={form.relationship ?? ""}
                       onChange={(v) => set("relationship", (v || undefined) as Relationship | undefined)}
                       options={Object.entries(RELATIONSHIP_LABEL)}
                     />
                   </Field>
-                  <Field label="Communication format">
+                  <Field label={t("Communication format")}>
                     <Select
                       value={form.format ?? ""}
                       onChange={(v) => set("format", (v || undefined) as CommunicationFormat | undefined)}
                       options={Object.entries(FORMAT_LABEL)}
                     />
                   </Field>
-                  <Field label="Purpose">
+                  <Field label={t("Purpose")}>
                     <Select
                       value={form.desiredOutcome ?? ""}
                       onChange={(v) => set("desiredOutcome", (v || undefined) as DesiredOutcome | undefined)}
@@ -224,7 +226,7 @@ function AnalysePage() {
                   </Field>
                 </div>
 
-                <Field label="Exact words">
+                <Field label={t("Exact words")}>
                   <Textarea
                     value={form.exactWords ?? ""}
                     onChange={(e) => {
@@ -237,7 +239,7 @@ function AnalysePage() {
                   />
                 </Field>
 
-                <Field label="Social or cultural context">
+                <Field label={t("Social or cultural context")}>
                   <Input
                     value={form.socialContext ?? ""}
                     onChange={(e) => {
@@ -254,7 +256,7 @@ function AnalysePage() {
 
         {failed && (
           <p role="alert" className="card-surface animate-rise border-destructive/30 p-4 text-sm text-destructive">
-            The analysis couldn't be completed. Please try again.
+            {t("The analysis couldn't be completed. Please try again.")}
           </p>
         )}
 
@@ -266,16 +268,16 @@ function AnalysePage() {
         >
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Considering several readings…
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t("Considering several readings…")}
             </>
           ) : (
-            "Analyse the situation"
+            t("Analyse the situation")
           )}
         </Button>
 
         <p className="flex items-start gap-2 px-1 text-xs leading-relaxed text-muted-foreground">
           <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          Sent securely for analysis. Saved scenarios stay in your browser unless you sign in.
+          {t("Sent securely for analysis. Saved scenarios stay in your browser unless you sign in.")}
         </p>
       </form>
     </div>
@@ -283,10 +285,11 @@ function AnalysePage() {
 }
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+  const { t } = useLocale();
   return (
     <div>
       <Label className="text-xs font-medium text-muted-foreground">
-        {label}
+        {t(label)}
         {hint && <span className="ml-1 opacity-70">· {hint}</span>}
       </Label>
       <div className="mt-1.5">{children}</div>
@@ -303,16 +306,17 @@ function Select({
   onChange: (value: string) => void;
   options: [string, string][];
 }) {
+  const { t } = useLocale();
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition-shadow focus:ring-2 focus:ring-ring/40"
     >
-      <option value="">Not specified</option>
+      <option value="">{t("Not specified")}</option>
       {options.map(([key, label]) => (
         <option key={key} value={key}>
-          {label}
+          {t(label)}
         </option>
       ))}
     </select>

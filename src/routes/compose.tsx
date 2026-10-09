@@ -1,3 +1,4 @@
+import { aiLanguageName, useLocale } from "@/lib/i18n/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Copy, Loader2, PenLine } from "lucide-react";
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/compose")({
 const FORMATS: ComposeFormat[] = ["email", "text", "in-person"];
 
 function ComposePage() {
+  const { t, locale } = useLocale();
   const { culture } = useCultureContext();
   const [mode, setMode] = useState<ComposeMode>("request");
   const [intent, setIntent] = useState("");
@@ -63,11 +65,11 @@ function ComposePage() {
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (intent.trim().length < 10) {
-      setError(mode === "request" ? "Add a sentence about your request." : "Add what your reply should convey.");
+      setError(mode === "request" ? t("Add a sentence about your request.") : t("Add what your reply should convey."));
       return;
     }
     if (mode === "reply" && theirMessage.trim().length < 3) {
-      setError("Add the message you received.");
+      setError(t("Add the message you received."));
       return;
     }
     setError(null);
@@ -82,13 +84,14 @@ function ComposePage() {
           ...(customRelationship.trim() ? { customRelationship: customRelationship.trim() } : {}),
           format,
           culture,
+          outputLanguage: aiLanguageName(locale),
         },
       });
       setDrafts(result);
       lastSubmitted.current = { mode, intent, theirMessage };
     } catch (err) {
       setDrafts(null);
-      setError(err instanceof Error && err.message ? err.message : "The wording couldn't be drafted just now. Please try again.");
+      setError(err instanceof Error && err.message ? err.message : t("The wording couldn't be drafted just now. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -97,12 +100,12 @@ function ComposePage() {
   return (
     <div className="mx-auto max-w-2xl px-5 pb-8 pt-8 sm:px-8">
       <PageHeading
-        eyebrow="Say it well"
+        eyebrow={t("Say it well")}
         title={
           <>
-            Find the
+            {t("Find the")}
             <br />
-            Right Words
+            {t("Right Words")}
           </>
         }
         aside={<CultureContextChip />}
@@ -129,7 +132,7 @@ function ComposePage() {
               mode === m ? "bg-card text-foreground shadow-card" : "text-muted-foreground hover:text-foreground",
             )}
           >
-            {m === "request" ? "Make a request" : "Reply to someone"}
+            {m === "request" ? t("Make a request") : t("Reply to someone")}
           </button>
         ))}
       </div>
@@ -138,14 +141,14 @@ function ComposePage() {
         {mode === "reply" && (
           <div>
             <Label htmlFor="theirs" className="text-sm font-semibold">
-              What they said to you
+              {t("What they said to you")}
             </Label>
             <Textarea
               id="theirs"
               value={theirMessage}
               onChange={(e) => setTheirMessage(e.target.value)}
               rows={3}
-              placeholder="Paste their message, or summarise it."
+              placeholder={t("Paste their message, or summarise it.")}
               className="mt-2 resize-y rounded-xl text-sm leading-relaxed"
             />
           </div>
@@ -153,7 +156,7 @@ function ComposePage() {
 
         <div>
           <Label htmlFor="intent" className="text-sm font-semibold">
-            {mode === "request" ? "What do you want to request?" : "What should your reply get across?"}
+            {mode === "request" ? t("What do you want to request?") : t("What should your reply get across?")}
           </Label>
           <Textarea
             id="intent"
@@ -162,8 +165,8 @@ function ComposePage() {
             rows={mode === "reply" ? 3 : 5}
             placeholder={
               mode === "request"
-                ? "e.g. I need the feedback a week earlier than the current schedule."
-                : "e.g. I can't take on the extra shift, but I don't want to sound unwilling."
+                ? t("e.g. I need the feedback a week earlier than the current schedule.")
+                : t("e.g. I can't take on the extra shift, but I don't want to sound unwilling.")
             }
             className="mt-2 resize-y rounded-xl text-sm leading-relaxed"
           />
@@ -171,16 +174,16 @@ function ComposePage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <Label className="text-xs font-medium text-muted-foreground">Relationship</Label>
+            <Label className="text-xs font-medium text-muted-foreground">{t("Relationship")}</Label>
             <select
               value={relationship}
               onChange={(e) => setRelationship(e.target.value as Relationship | "")}
               className="mt-1.5 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring/40"
             >
-              <option value="">Not specified</option>
+              <option value="">{t("Not specified")}</option>
               {Object.entries(RELATIONSHIP_LABEL).map(([k, v]) => (
                 <option key={k} value={k}>
-                  {k === "other" ? "Other (describe it)" : v}
+                  {k === "other" ? t("Other (describe it)") : t(v)}
                 </option>
               ))}
             </select>
@@ -188,7 +191,7 @@ function ComposePage() {
               <Input
                 value={customRelationship}
                 onChange={(e) => setCustomRelationship(e.target.value)}
-                placeholder="e.g. my landlord, my host family"
+                placeholder={t("e.g. my landlord, my host family")}
                 aria-label="Describe the relationship"
                 className="mt-2 h-11 rounded-xl text-sm"
               />
@@ -197,7 +200,7 @@ function ComposePage() {
 
           <div>
             <Label className="text-xs font-medium text-muted-foreground">
-              Format
+              {t("Format")}
             </Label>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {FORMATS.map((f) => (
@@ -216,7 +219,7 @@ function ComposePage() {
                       : "border-border bg-background hover:bg-muted",
                   )}
                 >
-                  {FORMAT_CHIP_LABEL[f]}
+                  {t(FORMAT_CHIP_LABEL[f])}
                 </button>
               ))}
             </div>
@@ -228,11 +231,11 @@ function ComposePage() {
         <Button type="submit" disabled={loading} className="h-12 w-full rounded-full text-sm">
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Drafting options…
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t("Drafting options…")}
             </>
           ) : (
             <>
-              <PenLine className="mr-2 h-4 w-4" /> {mode === "request" ? "Word my request" : "Word my reply"}
+              <PenLine className="mr-2 h-4 w-4" /> {mode === "request" ? t("Word my request") : t("Word my reply")}
             </>
           )}
         </Button>
@@ -241,7 +244,7 @@ function ComposePage() {
       {drafts && (
         <div className="mt-5 space-y-3">
           {mode === "reply" && lastSubmitted.current?.theirMessage.trim() && (
-            <Bubble side="assistant" label="They said">
+            <Bubble side="assistant" label={t("They said")}>
               {lastSubmitted.current.theirMessage.trim()}
             </Bubble>
           )}
@@ -255,19 +258,20 @@ function ComposePage() {
 }
 
 function DraftCard({ draft, delay }: { draft: ComposeDraft; delay: number }) {
+  const { t } = useLocale();
   const [copied, setCopied] = useState(false);
   return (
     <article className="animate-rise space-y-2" style={{ animationDelay: `${delay}ms` }}>
-      <Bubble side="user" label={draft.label}>
+      <Bubble side="user" label={t(draft.label)}>
         {draft.text}
       </Bubble>
       <div className="ml-auto max-w-[92%] rounded-xl bg-muted/60 px-3.5 py-2.5 sm:max-w-[85%]">
         <p className="text-xs leading-relaxed text-muted-foreground">
-          <span className="font-medium text-foreground">Likely effect: </span>
+          <span className="font-medium text-foreground">{t("Likely effect: ")}</span>
           {draft.effect}
         </p>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-          <span className="font-medium text-foreground">Trade-off: </span>
+          <span className="font-medium text-foreground">{t("Trade-off: ")}</span>
           {draft.tradeOff}
         </p>
         <Button
@@ -281,7 +285,7 @@ function DraftCard({ draft, delay }: { draft: ComposeDraft; delay: number }) {
           }}
         >
           {copied ? <Check className="mr-1.5 h-3.5 w-3.5" /> : <Copy className="mr-1.5 h-3.5 w-3.5" />}
-          {copied ? "Copied" : "Copy"}
+          {copied ? t("Copied") : t("Copy")}
         </Button>
       </div>
     </article>

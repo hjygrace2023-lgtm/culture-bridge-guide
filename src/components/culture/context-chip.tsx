@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useEffect, useRef, useState } from "react";
 import { Pencil, X } from "lucide-react";
 import { REGION_NOTES } from "@/lib/analysis/regions";
@@ -9,6 +10,7 @@ import { cn } from "@/lib/utils";
  * Flat ink-outlined token — no pill, no shadow.
  */
 export function CultureContextChip({ className }: { className?: string }) {
+  const { t } = useLocale();
   const { culture, setCulture, clearCulture } = useCultureContext();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
@@ -41,7 +43,7 @@ export function CultureContextChip({ className }: { className?: string }) {
             className={cn("h-2.5 w-2.5 shrink-0 rounded-full border-2 border-foreground", culture && "bg-coral")}
           />
           <span className="truncate font-display font-bold">
-            {culture ?? <span className="text-foreground/55">No context set</span>}
+            {culture ?? <span className="text-foreground/55">{t("No context set")}</span>}
           </span>
           <button
             type="button"
@@ -75,7 +77,7 @@ export function CultureContextChip({ className }: { className?: string }) {
               if (e.key === "Enter") commit(draft);
               if (e.key === "Escape") setEditing(false);
             }}
-            placeholder="e.g. Japan, or a university in Berlin"
+            placeholder={t("e.g. Japan, or a university in Berlin")}
             aria-label="Cultural context"
             className="h-10 w-full border-0 border-b-2 border-foreground bg-transparent text-sm font-medium outline-none"
           />
@@ -99,7 +101,7 @@ export function CultureContextChip({ className }: { className?: string }) {
               onClick={() => setEditing(false)}
               className="px-2 py-1.5 text-xs font-bold text-muted-foreground hover:text-foreground"
             >
-              Cancel
+              {t("Cancel")}
             </button>
             <button
               type="button"

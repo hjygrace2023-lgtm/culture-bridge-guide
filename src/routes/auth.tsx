@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const { t } = useLocale();
   const navigate = useNavigate();
   const { session, loading } = useSession();
   const [mode, setMode] = useState<"in" | "up">("in");
@@ -49,7 +51,7 @@ function AuthPage() {
         });
         if (signUpError) throw signUpError;
         if (!data.session) {
-          setMessage("Check your email to confirm the account, then come back and sign in.");
+          setMessage(t("Check your email to confirm the account, then come back and sign in."));
           return;
         }
       } else {
@@ -61,7 +63,7 @@ function AuthPage() {
       }
       navigate({ to: "/account", replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "That didn't work. Please try again.");
+      setError(err instanceof Error ? err.message : t("That didn't work. Please try again."));
     } finally {
       setBusy(false);
     }
@@ -76,15 +78,15 @@ function AuthPage() {
   return (
     <div className="mx-auto max-w-md px-5 pb-10 pt-8 sm:px-8">
       <PageHeading
-        eyebrow="Optional"
+        eyebrow={t("Optional")}
         title={
           <>
-            Sign
+            {t("Sign")}
             <br />
-            In
+            {t("In")}
           </>
         }
-        lede="Keep your history across devices."
+        lede={t("Keep your history across devices.")}
       />
 
       <div className="mt-5 flex border-2 border-foreground">
@@ -101,7 +103,7 @@ function AuthPage() {
               i > 0 ? "border-l-2 border-foreground" : ""
             } ${mode === m ? "bg-foreground text-background" : "hover:bg-yellow"}`}
           >
-            {m === "in" ? "Sign in" : "Create account"}
+            {m === "in" ? t("Sign in") : t("Create account")}
           </button>
         ))}
       </div>
@@ -109,7 +111,7 @@ function AuthPage() {
       <form onSubmit={onSubmit} className="mt-5 space-y-4">
         <div>
           <Label htmlFor="email" className="text-xs font-bold uppercase tracking-[0.08em]">
-            Email
+            {t("Email")}
           </Label>
           <Input
             id="email"
@@ -123,7 +125,7 @@ function AuthPage() {
         </div>
         <div>
           <Label htmlFor="password" className="text-xs font-bold uppercase tracking-[0.08em]">
-            Password
+            {t("Password")}
           </Label>
           <Input
             id="password"
@@ -146,17 +148,17 @@ function AuthPage() {
 
         <Button type="submit" size="lg" variant="accent" disabled={busy} className="w-full">
           {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          {mode === "in" ? "Sign in" : "Create account"}
+          {mode === "in" ? t("Sign in") : t("Create account")}
         </Button>
       </form>
 
       <Button type="button" variant="outline" size="lg" onClick={onGoogle} className="mt-3 w-full">
-        Continue with Google
+        {t("Continue with Google")}
       </Button>
 
       <p className="mt-6 text-xs text-muted-foreground">
         <Link to="/" className="underline underline-offset-4">
-          Continue without an account →
+          {t("Continue without an account →")}
         </Link>
       </p>
     </div>

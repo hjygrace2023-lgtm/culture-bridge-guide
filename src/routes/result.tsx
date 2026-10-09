@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { Bubble } from "@/components/ui/bubble";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -44,6 +45,7 @@ export const Route = createFileRoute("/result")({
 });
 
 function ResultPage() {
+  const { t } = useLocale();
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [ready, setReady] = useState(false);
   const { save } = useSavedScenarios();
@@ -67,12 +69,12 @@ function ResultPage() {
   if (!analysis) {
     return (
       <div className="mx-auto max-w-md px-5 pt-20 text-center">
-        <h1 className="font-display text-2xl font-semibold">No analysis open</h1>
+        <h1 className="font-display text-2xl font-semibold">{t("No analysis open")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Describe a situation and CultureLens will lay out the possible readings here.
+          {t("Describe a situation and CultureLens will lay out the possible readings here.")}
         </p>
         <Button asChild className="mt-6 rounded-full">
-          <Link to="/analyse">Analyse a situation</Link>
+          <Link to="/analyse">{t("Analyse a situation")}</Link>
         </Button>
       </div>
     );
@@ -81,7 +83,7 @@ function ResultPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-4 px-5 pb-8 pt-8">
       <header className="animate-rise">
-        <p className="text-xs font-medium uppercase tracking-wider text-primary">Analysis</p>
+        <p className="text-xs font-medium uppercase tracking-wider text-primary">{t("Analysis")}</p>
         <h1 className="mt-1 font-display text-2xl font-semibold leading-snug">{analysis.title}</h1>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
           These are possibilities drawn from what you described. There is not enough information to determine the
@@ -92,16 +94,16 @@ function ResultPage() {
       {analysis.safetyNotice && (
         <div className="animate-rise rounded-2xl border border-clay-foreground/25 bg-clay/60 p-4 text-clay-foreground">
           <p className="flex items-center gap-2 text-sm font-semibold">
-            <AlertTriangle className="h-4 w-4" /> Before going further
+            <AlertTriangle className="h-4 w-4" /> {t("Before going further")}
           </p>
           <p className="mt-2 text-xs leading-relaxed">{analysis.safetyNotice}</p>
         </div>
       )}
 
-      <Section n={1} title="What was literally communicated" icon={<Eye className="h-4 w-4" />}>
+      <Section n={1} title={t("What was literally communicated")} icon={<Eye className="h-4 w-4" />}>
         {analysis.input.exactWords?.trim() && (
           <div className="mb-3">
-            <Bubble side="assistant" label="Their words">
+            <Bubble side="assistant" label={t("Their words")}>
               {analysis.input.exactWords.trim()}
             </Bubble>
           </div>
@@ -109,7 +111,7 @@ function ResultPage() {
         <p className="text-sm leading-relaxed text-muted-foreground">{analysis.literalMeaning}</p>
       </Section>
 
-      <Section n={2} title="Plausible interpretations" icon={<Lightbulb className="h-4 w-4" />}>
+      <Section n={2} title={t("Plausible interpretations")} icon={<Lightbulb className="h-4 w-4" />}>
         <div className="space-y-3">
           {analysis.interpretations.map((it, i) => (
             <article
@@ -127,12 +129,12 @@ function ResultPage() {
                     it.plausibility === "requires-more-context" && "bg-lilac text-lilac-foreground",
                   )}
                 >
-                  {PLAUSIBILITY_LABEL[it.plausibility]}
+                  {t(PLAUSIBILITY_LABEL[it.plausibility])}
                 </span>
               </div>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{it.mightHaveMeant}</p>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                <span className="font-medium text-foreground">Why this is plausible: </span>
+                <span className="font-medium text-foreground">{t("Why this is plausible: ")}</span>
                 {it.whyPlausible}
               </p>
               <ul className="mt-2 space-y-1">
@@ -147,7 +149,7 @@ function ResultPage() {
         </div>
       </Section>
 
-      <Section n={3} title="What may be creating the gap" icon={<Scale className="h-4 w-4" />}>
+      <Section n={3} title={t("What may be creating the gap")} icon={<Scale className="h-4 w-4" />}>
         <div className="space-y-4">
           {(["cultural", "individual", "situational"] as FactorKind[]).map((kind) => {
             const items = analysis.gapFactors.filter((f) => f.kind === kind);
@@ -156,10 +158,10 @@ function ResultPage() {
               <div key={kind}>
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {kind === "cultural"
-                    ? "Cultural patterns (tendencies, not rules)"
+                    ? t("Cultural patterns (tendencies, not rules)")
                     : kind === "individual"
-                      ? "Individual factors"
-                      : "Situational factors"}
+                      ? t("Individual factors")
+                      : t("Situational factors")}
                 </p>
                 <div className="mt-2 space-y-2">
                   {items.map((f) => (
@@ -184,10 +186,10 @@ function ResultPage() {
         </div>
       </Section>
 
-      <Section n={4} title="Facts versus assumptions" icon={<Scale className="h-4 w-4" />}>
+      <Section n={4} title={t("Facts versus assumptions")} icon={<Scale className="h-4 w-4" />}>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl bg-sage/40 p-4">
-            <p className="text-xs font-semibold text-sage-foreground">What you observed</p>
+            <p className="text-xs font-semibold text-sage-foreground">{t("What you observed")}</p>
             <ul className="mt-2 space-y-1.5">
               {analysis.observed.map((o) => (
                 <li key={o} className="text-xs leading-relaxed text-muted-foreground">
@@ -197,7 +199,7 @@ function ResultPage() {
             </ul>
           </div>
           <div className="rounded-xl bg-sand/50 p-4">
-            <p className="text-xs font-semibold text-sand-foreground">What you may be inferring</p>
+            <p className="text-xs font-semibold text-sand-foreground">{t("What you may be inferring")}</p>
             <ul className="mt-2 space-y-1.5">
               {analysis.inferred.map((o) => (
                 <li key={o} className="text-xs leading-relaxed text-muted-foreground">
@@ -209,7 +211,7 @@ function ResultPage() {
         </div>
       </Section>
 
-      <Section n={5} title="What remains uncertain" icon={<HelpCircle className="h-4 w-4" />}>
+      <Section n={5} title={t("What remains uncertain")} icon={<HelpCircle className="h-4 w-4" />}>
         <ul className="space-y-1.5">
           {analysis.uncertainties.map((u) => (
             <li key={u} className="text-sm leading-relaxed text-muted-foreground">
@@ -218,7 +220,7 @@ function ResultPage() {
           ))}
         </ul>
         <div className="mt-4 rounded-xl bg-muted/60 p-3">
-          <p className="text-xs font-semibold">What would sharpen this</p>
+          <p className="text-xs font-semibold">{t("What would sharpen this")}</p>
           <ul className="mt-1.5 space-y-1">
             {analysis.wouldHelp.map((w) => (
               <li key={w} className="text-xs leading-relaxed text-muted-foreground">
@@ -229,7 +231,7 @@ function ResultPage() {
         </div>
       </Section>
 
-      <Section n={6} title="Recommended strategy" icon={<Lightbulb className="h-4 w-4" />}>
+      <Section n={6} title={t("Recommended strategy")} icon={<Lightbulb className="h-4 w-4" />}>
         <p className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
           {analysis.strategy.name}
         </p>
@@ -241,33 +243,33 @@ function ResultPage() {
         )}
       </Section>
 
-      <Section n={7} title="Ways you could respond" icon={<Copy className="h-4 w-4" />}>
+      <Section n={7} title={t("Ways you could respond")} icon={<Copy className="h-4 w-4" />}>
         <ResponseList analysis={analysis} />
       </Section>
 
-      <Section n={8} title="Best clarification question" icon={<HelpCircle className="h-4 w-4" />}>
+      <Section n={8} title={t("Best clarification question")} icon={<HelpCircle className="h-4 w-4" />}>
         <p className="rounded-xl bg-accent/60 p-4 text-sm leading-relaxed text-accent-foreground">
           {analysis.clarificationQuestion}
         </p>
-        <CopyButton className="mt-3" value={analysis.clarificationQuestion} label="Copy question" />
+        <CopyButton className="mt-3" value={analysis.clarificationQuestion} label={t("Copy question")} />
       </Section>
 
       <div className="animate-rise grid gap-2 pt-2 sm:grid-cols-2">
         <Button asChild variant="secondary" className="rounded-full">
           <Link to="/analyse" search={{ edit: true }}>
-            <RefreshCw className="mr-1.5 h-4 w-4" /> Edit context and analyse again
+            <RefreshCw className="mr-1.5 h-4 w-4" /> {t("Edit context and analyse again")}
           </Link>
         </Button>
-        <CopyButton value={analysisToText(analysis)} label="Copy full analysis" variant="secondary" full />
+        <CopyButton value={analysisToText(analysis)} label={t("Copy full analysis")} variant="secondary" full />
         <Button
           variant="secondary"
           className="rounded-full"
           onClick={() => {
             save(analysis);
-            toast.success("Scenario saved to this browser");
+            toast.success(t("Scenario saved to this browser"));
           }}
         >
-          <Save className="mr-1.5 h-4 w-4" /> Save scenario
+          <Save className="mr-1.5 h-4 w-4" /> {t("Save scenario")}
         </Button>
         <Button
           variant="secondary"
@@ -277,10 +279,10 @@ function ResultPage() {
             navigate({ to: "/review/$id/flashcards", params: { id: analysis.id } });
           }}
         >
-          <GraduationCap className="mr-1.5 h-4 w-4" /> Review this scenario
+          <GraduationCap className="mr-1.5 h-4 w-4" /> {t("Review this scenario")}
         </Button>
         <Button className="rounded-full" onClick={() => navigate({ to: "/analyse" })}>
-          <Plus className="mr-1.5 h-4 w-4" /> Start a new scenario
+          <Plus className="mr-1.5 h-4 w-4" /> {t("Start a new scenario")}
         </Button>
       </div>
 
@@ -293,6 +295,7 @@ function ResultPage() {
 }
 
 function ResponseList({ analysis }: { analysis: Analysis }) {
+  const { t } = useLocale();
   const [tone, setTone] = useState<ToneKey | null>(null);
   const tones = useMemo(() => Object.entries(TONE_LABEL) as [ToneKey, string][], []);
 
@@ -311,7 +314,7 @@ function ResponseList({ analysis }: { analysis: Analysis }) {
                 : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
             )}
           >
-            {label}
+            {t(label)}
           </button>
         ))}
       </div>
@@ -325,19 +328,19 @@ function ResponseList({ analysis }: { analysis: Analysis }) {
               className="animate-rise rounded-xl border border-border/80 bg-background/60 p-4"
               style={{ animationDelay: `${i * 60}ms` }}
             >
-              <h3 className="text-sm font-semibold">{r.label}</h3>
+              <h3 className="text-sm font-semibold">{t(r.label)}</h3>
               <div className="mt-2">
                 <Bubble side="user">{wording}</Bubble>
               </div>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                <span className="font-medium text-foreground">Likely effect: </span>
+                <span className="font-medium text-foreground">{t("Likely effect: ")}</span>
                 {r.likelyEffect}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                <span className="font-medium text-foreground">Trade-off: </span>
+                <span className="font-medium text-foreground">{t("Trade-off: ")}</span>
                 {r.tradeOff}
               </p>
-              <CopyButton className="mt-3" value={wording} label="Copy response" />
+              <CopyButton className="mt-3" value={wording} label={t("Copy response")} />
             </article>
           );
         })}
@@ -359,6 +362,7 @@ function CopyButton({
   variant?: "outline" | "secondary";
   full?: boolean;
 }) {
+  const { t } = useLocale();
   const [copied, setCopied] = useState(false);
   return (
     <Button
@@ -372,12 +376,12 @@ function CopyButton({
           setCopied(true);
           setTimeout(() => setCopied(false), 1800);
         } catch {
-          toast.error("Your browser blocked copying — select the text manually.");
+          toast.error(t("Your browser blocked copying — select the text manually."));
         }
       }}
     >
       {copied ? <Check className="mr-1.5 h-3.5 w-3.5" /> : <Copy className="mr-1.5 h-3.5 w-3.5" />}
-      {copied ? "Copied" : label}
+      {copied ? t("Copied") : label}
     </Button>
   );
 }
@@ -393,6 +397,7 @@ function Section({
   icon: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const { t } = useLocale();
   return (
     <section className="animate-rise card-surface p-5" style={{ animationDelay: `${n * 40}ms` }}>
       <div className="mb-3 flex items-center gap-2">
