@@ -65,11 +65,11 @@ function ComposePage() {
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (intent.trim().length < 10) {
-      setError(mode === "request" ? "Add a sentence about your request." : "Add what your reply should convey.");
+      setError(mode === "request" ? t("Add a sentence about your request.") : t("Add what your reply should convey."));
       return;
     }
     if (mode === "reply" && theirMessage.trim().length < 3) {
-      setError("Add the message you received.");
+      setError(t("Add the message you received."));
       return;
     }
     setError(null);
@@ -90,7 +90,7 @@ function ComposePage() {
       lastSubmitted.current = { mode, intent, theirMessage };
     } catch (err) {
       setDrafts(null);
-      setError(err instanceof Error && err.message ? err.message : "The wording couldn't be drafted just now. Please try again.");
+      setError(err instanceof Error && err.message ? err.message : t("The wording couldn't be drafted just now. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -131,7 +131,7 @@ function ComposePage() {
               mode === m ? "bg-card text-foreground shadow-card" : "text-muted-foreground hover:text-foreground",
             )}
           >
-            {m === "request" ? "Make a request" : "Reply to someone"}
+            {m === "request" ? t("Make a request") : t("Reply to someone")}
           </button>
         ))}
       </div>
@@ -155,7 +155,7 @@ function ComposePage() {
 
         <div>
           <Label htmlFor="intent" className="text-sm font-semibold">
-            {mode === "request" ? "What do you want to request?" : "What should your reply get across?"}
+            {mode === "request" ? t("What do you want to request?") : t("What should your reply get across?")}
           </Label>
           <Textarea
             id="intent"
@@ -164,8 +164,8 @@ function ComposePage() {
             rows={mode === "reply" ? 3 : 5}
             placeholder={
               mode === "request"
-                ? "e.g. I need the feedback a week earlier than the current schedule."
-                : "e.g. I can't take on the extra shift, but I don't want to sound unwilling."
+                ? t("e.g. I need the feedback a week earlier than the current schedule.")
+                : t("e.g. I can't take on the extra shift, but I don't want to sound unwilling.")
             }
             className="mt-2 resize-y rounded-xl text-sm leading-relaxed"
           />
@@ -182,7 +182,7 @@ function ComposePage() {
               <option value="">{t("Not specified")}</option>
               {Object.entries(RELATIONSHIP_LABEL).map(([k, v]) => (
                 <option key={k} value={k}>
-                  {k === "other" ? "Other (describe it)" : v}
+                  {k === "other" ? t("Other (describe it)") : v}
                 </option>
               ))}
             </select>
@@ -234,7 +234,7 @@ function ComposePage() {
             </>
           ) : (
             <>
-              <PenLine className="mr-2 h-4 w-4" /> {mode === "request" ? "Word my request" : "Word my reply"}
+              <PenLine className="mr-2 h-4 w-4" /> {mode === "request" ? t("Word my request") : t("Word my reply")}
             </>
           )}
         </Button>
@@ -284,7 +284,7 @@ function DraftCard({ draft, delay }: { draft: ComposeDraft; delay: number }) {
           }}
         >
           {copied ? <Check className="mr-1.5 h-3.5 w-3.5" /> : <Copy className="mr-1.5 h-3.5 w-3.5" />}
-          {copied ? "Copied" : "Copy"}
+          {copied ? t("Copied") : "Copy"}
         </Button>
       </div>
     </article>

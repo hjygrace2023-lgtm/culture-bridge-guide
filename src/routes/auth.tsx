@@ -51,7 +51,7 @@ function AuthPage() {
         });
         if (signUpError) throw signUpError;
         if (!data.session) {
-          setMessage("Check your email to confirm the account, then come back and sign in.");
+          setMessage(t("Check your email to confirm the account, then come back and sign in."));
           return;
         }
       } else {
@@ -63,7 +63,7 @@ function AuthPage() {
       }
       navigate({ to: "/account", replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "That didn't work. Please try again.");
+      setError(err instanceof Error ? err.message : t("That didn't work. Please try again."));
     } finally {
       setBusy(false);
     }
@@ -103,7 +103,7 @@ function AuthPage() {
               i > 0 ? "border-l-2 border-foreground" : ""
             } ${mode === m ? "bg-foreground text-background" : "hover:bg-yellow"}`}
           >
-            {m === "in" ? "Sign in" : "Create account"}
+            {m === "in" ? t("Sign in") : t("Create account")}
           </button>
         ))}
       </div>
@@ -148,7 +148,7 @@ function AuthPage() {
 
         <Button type="submit" size="lg" variant="accent" disabled={busy} className="w-full">
           {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          {mode === "in" ? "Sign in" : "Create account"}
+          {mode === "in" ? t("Sign in") : t("Create account")}
         </Button>
       </form>
 

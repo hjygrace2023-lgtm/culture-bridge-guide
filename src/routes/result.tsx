@@ -158,10 +158,10 @@ function ResultPage() {
               <div key={kind}>
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {kind === "cultural"
-                    ? "Cultural patterns (tendencies, not rules)"
+                    ? t("Cultural patterns (tendencies, not rules)")
                     : kind === "individual"
-                      ? "Individual factors"
-                      : "Situational factors"}
+                      ? t("Individual factors")
+                      : t("Situational factors")}
                 </p>
                 <div className="mt-2 space-y-2">
                   {items.map((f) => (
@@ -266,7 +266,7 @@ function ResultPage() {
           className="rounded-full"
           onClick={() => {
             save(analysis);
-            toast.success("Scenario saved to this browser");
+            toast.success(t("Scenario saved to this browser"));
           }}
         >
           <Save className="mr-1.5 h-4 w-4" /> {t("Save scenario")}
@@ -376,12 +376,12 @@ function CopyButton({
           setCopied(true);
           setTimeout(() => setCopied(false), 1800);
         } catch {
-          toast.error("Your browser blocked copying — select the text manually.");
+          toast.error(t("Your browser blocked copying — select the text manually."));
         }
       }}
     >
       {copied ? <Check className="mr-1.5 h-3.5 w-3.5" /> : <Copy className="mr-1.5 h-3.5 w-3.5" />}
-      {copied ? "Copied" : label}
+      {copied ? t("Copied") : label}
     </Button>
   );
 }

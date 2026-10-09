@@ -107,11 +107,11 @@ function AnalysePage() {
     event.preventDefault();
     const situation = form.situation.trim();
     if (situation.length < 20) {
-      setError("Please add at least a sentence or two.");
+      setError(t("Please add at least a sentence or two."));
       return;
     }
     if (situation.length > 4000) {
-      setError("Please keep this under 4,000 characters.");
+      setError(t("Please keep this under 4,000 characters."));
       return;
     }
     setError(null);
@@ -271,7 +271,7 @@ function AnalysePage() {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t("Considering several readings…")}
             </>
           ) : (
-            "Analyse the situation"
+            t("Analyse the situation")
           )}
         </Button>
 
