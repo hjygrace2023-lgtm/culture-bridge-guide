@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +19,8 @@ import {
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Your account — CultureLens" },
       { name: "description", content: "Your display name, picture and saved analysis history." },
       { property: "og:title", content: "Your account — CultureLens" },
@@ -28,6 +31,7 @@ export const Route = createFileRoute("/_authenticated/account")({
 });
 
 function AccountPage() {
+  const { t, locale } = useLocale();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const getProfile = useServerFn(getProfileFn);
@@ -97,11 +101,11 @@ function AccountPage() {
   return (
     <div className="mx-auto max-w-2xl px-5 pb-10 pt-8 sm:px-8">
       <PageHeading
-        eyebrow="Your account"
+        eyebrow={t('Your account')}
         title={
           <>
-            Profile
-            <br />& History
+            {t('Profile')}
+          <br />& History
           </>
         }
         aside={
@@ -110,7 +114,7 @@ function AccountPage() {
             onClick={signOut}
             className="font-display text-xs font-bold uppercase tracking-[0.08em] underline underline-offset-4"
           >
-            Sign out
+            {t('Sign out')}
           </button>
         }
       />
@@ -127,13 +131,13 @@ function AccountPage() {
         </div>
         <div className="flex-1">
           <Label htmlFor="display-name" className="text-xs font-bold uppercase tracking-[0.08em]">
-            Display name
+            {t('Display name')}
           </Label>
           <Input
             id="display-name"
-            value={name}
+            value={t(name)}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
+            placeholder={t('Your name')}
             className="mt-1.5"
           />
         </div>
@@ -153,14 +157,14 @@ function AccountPage() {
       {notice && <p className="mt-3 text-xs text-muted-foreground">{notice}</p>}
 
       <hr className="rule-thick mt-8" />
-      <h2 className="mt-5 font-display text-xl font-extrabold tracking-tight">History</h2>
+      <h2 className="mt-5 font-display text-xl font-extrabold tracking-tight">{t('History')}</h2>
 
       {history.isLoading ? (
-        <p className="mt-3 text-sm text-muted-foreground">Loading…</p>
+        <p className="mt-3 text-sm text-muted-foreground">{t('Loading…')}</p>
       ) : (history.data?.length ?? 0) === 0 ? (
         <p className="mt-3 text-sm text-muted-foreground">
-          Nothing yet. Analyses and drafts you make while signed in appear here.
-        </p>
+            {t('Nothing yet. Analyses and drafts you make while signed in appear here.')}
+          </p>
       ) : (
         <ul className="mt-4 border-2 border-foreground">
           {history.data?.map((entry, i) => (
@@ -172,12 +176,12 @@ function AccountPage() {
                 <p className="truncate font-display text-base font-bold">{entry.title}</p>
                 <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
                   {entry.kind === "compose" ? "Compose" : "Analyse"} ·{" "}
-                  {new Date(entry.createdAt).toLocaleDateString()}
+                  {new Date(entry.createdAt).toLocaleDateString(locale)}
                 </p>
               </div>
               <button
                 type="button"
-                aria-label={`Delete ${entry.title}`}
+                aria-label={t("Delete {title}", { title: entry.title })}
                 onClick={() => removeEntry.mutate(entry.id)}
                 className="shrink-0 p-2 text-foreground/60 transition-colors hover:text-destructive"
               >

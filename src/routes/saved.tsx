@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Layers, RotateCw, Shuffle, Trash2 } from "lucide-react";
@@ -10,6 +11,8 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/saved")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Saved scenarios — CultureLens" },
       {
         name: "description",
@@ -23,21 +26,22 @@ export const Route = createFileRoute("/saved")({
 });
 
 function SavedPage() {
+  const { t, locale } = useLocale();
   const { scenarios, hydrated, remove } = useSavedScenarios();
   const [mode, setMode] = useState<"list" | "cards">("list");
 
   return (
     <div className="mx-auto max-w-2xl px-5 pb-8 pt-8 sm:px-8">
       <PageHeading
-        eyebrow="Your own archive"
+        eyebrow={t('Your own archive')}
         title={
           <>
-            Saved
-            <br />
-            Scenarios
+            {t('Saved')}
+          <br />
+            {t('Scenarios')}
           </>
         }
-        lede="Stored in this browser only. No account, no upload."
+        lede={t('Stored in this browser only. No account, no upload.')}
       />
 
       {scenarios.length > 0 && (
@@ -67,12 +71,12 @@ function SavedPage() {
       ) : scenarios.length === 0 ? (
         <div className="animate-rise mt-8 card-surface p-8 text-center">
           <Layers className="mx-auto h-8 w-8 text-muted-foreground" />
-          <h2 className="mt-3 text-base font-semibold">Nothing saved yet</h2>
+          <h2 className="mt-3 text-base font-semibold">{t('Nothing saved yet')}</h2>
           <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
-            When an analysis is useful, save it. You can reopen it later or revisit it as a flashcard quiz.
+            {t('When an analysis is useful, save it. You can reopen it later or revisit it as a flashcard quiz.')}
           </p>
           <Button asChild className="mt-5 rounded-full">
-            <Link to="/analyse">Analyse a situation</Link>
+            <Link to="/analyse">{t('Analyse a situation')}</Link>
           </Button>
         </div>
       ) : mode === "list" ? (
@@ -97,6 +101,7 @@ function ScenarioRow({
   delay: number;
   onDelete: () => void;
 }) {
+  const { t, locale } = useLocale();
   const navigate = useNavigate();
   return (
     <li className="animate-rise card-surface p-4" style={{ animationDelay: `${delay}ms` }}>
@@ -104,12 +109,12 @@ function ScenarioRow({
         <div className="min-w-0">
           <h2 className="truncate text-sm font-semibold">{scenario.title}</h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            {new Date(scenario.savedAt).toLocaleDateString()} · {scenario.setting}
+            {new Date(scenario.savedAt).toLocaleDateString(locale)} · {t(scenario.setting)}
           </p>
         </div>
         <button
           onClick={onDelete}
-          aria-label={`Delete ${scenario.title}`}
+          aria-label={t("Delete {title}", { title: scenario.title })}
           className="shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
@@ -117,10 +122,10 @@ function ScenarioRow({
       </div>
       <div className="mt-3 flex flex-wrap gap-1.5">
         <span className="rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-medium text-accent-foreground">
-          {scenario.mainGap}
+          {t(scenario.mainGap)}
         </span>
         <span className="rounded-full bg-sage px-2.5 py-0.5 text-[11px] font-medium text-sage-foreground">
-          {scenario.strategy}
+          {t(scenario.strategy)}
         </span>
       </div>
       <Button
@@ -132,13 +137,14 @@ function ScenarioRow({
           navigate({ to: "/result" });
         }}
       >
-        Reopen analysis
-      </Button>
+            {t('Reopen analysis')}
+          </Button>
     </li>
   );
 }
 
 function FlashcardDeck({ scenarios }: { scenarios: SavedScenario[] }) {
+  const { t, locale } = useLocale();
   const [order, setOrder] = useState<number[]>(() => scenarios.map((_, i) => i));
   const [pos, setPos] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -182,30 +188,30 @@ function FlashcardDeck({ scenarios }: { scenarios: SavedScenario[] }) {
       >
         {!flipped ? (
           <div className="min-h-52">
-            <p className="text-xs font-medium uppercase tracking-wide text-primary">The situation</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-primary">{t('The situation')}</p>
             <p className="mt-3 text-sm leading-relaxed">{scenario.analysis.input.situation}</p>
-            <p className="mt-4 text-xs text-muted-foreground">{scenario.setting}</p>
+            <p className="mt-4 text-xs text-muted-foreground">{t(scenario.setting)}</p>
             <p className="mt-6 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
               <RotateCw className="h-3.5 w-3.5" /> Think of two possible readings, then tap to reveal
             </p>
           </div>
         ) : (
           <div className="min-h-52">
-            <p className="text-xs font-medium uppercase tracking-wide text-primary">Possible readings</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-primary">{t('Possible readings')}</p>
             <ul className="mt-3 space-y-2">
               {top.map((it) => (
                 <li key={it.id} className="rounded-xl bg-muted/60 p-3">
                   <p className="text-sm font-semibold">{it.title}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{PLAUSIBILITY_LABEL[it.plausibility]}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{t(PLAUSIBILITY_LABEL[it.plausibility])}</p>
                 </li>
               ))}
             </ul>
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              <span className="font-medium text-foreground">Strategy: </span>
-              {scenario.strategy}
+              <span className="font-medium text-foreground">{t('Strategy:')}</span>
+              {t(scenario.strategy)}
             </p>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-              <span className="font-medium text-foreground">Clarifying question: </span>
+              <span className="font-medium text-foreground">{t('Clarifying question:')}</span>
               {scenario.analysis.clarificationQuestion}
             </p>
           </div>

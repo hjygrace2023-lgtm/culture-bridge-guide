@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Check, Layers, RotateCw, X } from "lucide-react";
@@ -9,6 +10,8 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/review/$id/quiz")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Quiz — CultureLens" },
       {
         name: "description",
@@ -22,6 +25,7 @@ export const Route = createFileRoute("/review/$id/quiz")({
 });
 
 function QuizPage() {
+  const { t, locale } = useLocale();
   const { id } = Route.useParams();
   const { scenarios, hydrated } = useSavedScenarios();
   const { recordQuiz } = useReviewProgress();
@@ -58,12 +62,12 @@ function QuizPage() {
           {scenario && (
             <Button asChild variant="secondary" className="rounded-full">
               <Link to="/review/$id/flashcards" params={{ id }}>
-                Flashcards
-              </Link>
+            {t('Flashcards')}
+          </Link>
             </Button>
           )}
           <Button asChild className="rounded-full">
-            <Link to="/review">Back to Review</Link>
+            <Link to="/review">{t('Back to Review')}</Link>
           </Button>
         </div>
       </div>
@@ -74,7 +78,7 @@ function QuizPage() {
     return (
       <div className="mx-auto max-w-2xl px-5 pb-10 pt-10">
         <div className="animate-rise card-surface p-6 text-center">
-          <h1 className="font-display text-2xl font-semibold">Nicely done</h1>
+          <h1 className="font-display text-2xl font-semibold">{t('Nicely done')}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {questions.length} question{questions.length === 1 ? "" : "s"} completed · {correct} answered as expected
           </p>
@@ -105,7 +109,7 @@ function QuizPage() {
               <RotateCw className="mr-1.5 h-4 w-4" /> Try again
             </Button>
             <Button asChild className="rounded-full">
-              <Link to="/review">Back to Review Hub</Link>
+              <Link to="/review">{t('Back to Review Hub')}</Link>
             </Button>
           </div>
         </div>
@@ -148,7 +152,7 @@ function QuizPage() {
       <h1 className="animate-rise mt-2 font-display text-2xl font-semibold">{scenario.title}</h1>
 
       <article className="animate-rise card-surface mt-4 p-6">
-        <p className="text-sm font-medium leading-relaxed">{q.question}</p>
+        <p className="text-sm font-medium leading-relaxed">{t(q.question)}</p>
         <ul className="mt-4 space-y-2">
           {q.options.map((option) => {
             const chosen = picked?.id === option.id;
@@ -175,7 +179,7 @@ function QuizPage() {
                     ) : chosen ? (
                       <X className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
                     ) : null}
-                    {option.text}
+                    {t(option.text)}
                   </span>
                 </button>
               </li>
@@ -185,8 +189,8 @@ function QuizPage() {
 
         {picked && (
           <div className="animate-flip mt-5 border-t border-border pt-4" aria-live="polite">
-            <p className="text-sm leading-relaxed">{picked.feedback}</p>
-            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{q.explanation}</p>
+            <p className="text-sm leading-relaxed">{t(picked.feedback)}</p>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t(q.explanation)}</p>
             <Button className="mt-5 w-full rounded-full" onClick={next}>
               {index + 1 >= questions.length ? "See reflection" : "Next question"}
             </Button>
@@ -195,9 +199,8 @@ function QuizPage() {
       </article>
 
       <p className="pt-6 text-center text-[11px] leading-relaxed text-muted-foreground">
-        There is rarely one right reply. Where two options could both work, the difference is usually a trade-off
-        between clarity and warmth.
-      </p>
+            {t('There is rarely one right reply. Where two options could both work, the difference is usually a trade-off between clarity and warmth.')}
+          </p>
     </div>
   );
 }

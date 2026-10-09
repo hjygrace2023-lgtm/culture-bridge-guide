@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Check, Eye, GraduationCap, RotateCw } from "lucide-react";
@@ -8,6 +9,8 @@ import { buildStudySet, orderCards, useReviewProgress, type StudyCard } from "@/
 export const Route = createFileRoute("/review/$id/flashcards")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Flashcards — CultureLens" },
       {
         name: "description",
@@ -21,6 +24,7 @@ export const Route = createFileRoute("/review/$id/flashcards")({
 });
 
 function FlashcardsPage() {
+  const { t, locale } = useLocale();
   const { id } = Route.useParams();
   const { scenarios, hydrated } = useSavedScenarios();
   const { get, hydrated: progressReady, markCard } = useReviewProgress();
@@ -93,9 +97,9 @@ function FlashcardsPage() {
       </div>
 
       <article className="animate-rise card-surface mt-4 p-6">
-        <p className="text-xs font-medium uppercase tracking-wide text-primary">{card.label}</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-primary">{t(card.label)}</p>
         <p className="mt-3 text-sm leading-relaxed">{card.front}</p>
-        <p className="mt-4 text-sm font-medium">{card.prompt}</p>
+        <p className="mt-4 text-sm font-medium">{t(card.prompt)}</p>
 
         {!revealed ? (
           <Button className="mt-6 w-full rounded-full" onClick={() => setRevealed(true)}>
@@ -104,9 +108,9 @@ function FlashcardsPage() {
         ) : (
           <div className="animate-flip mt-6 border-t border-border pt-5" aria-live="polite">
             {card.back.map((section) => (
-              <section key={section.heading} className="mt-4 first:mt-0">
+              <section key={t(section.heading)} className="mt-4 first:mt-0">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {section.heading}
+                  {t(section.heading)}
                 </h2>
                 <ul className="mt-2 space-y-2">
                   {section.items.map((item) => (
@@ -117,7 +121,7 @@ function FlashcardsPage() {
                 </ul>
               </section>
             ))}
-            <p className="mt-5 text-xs leading-relaxed text-muted-foreground">{card.reminder}</p>
+            <p className="mt-5 text-xs leading-relaxed text-muted-foreground">{t(card.reminder)}</p>
           </div>
         )}
       </article>
@@ -152,8 +156,8 @@ function FlashcardsPage() {
             </Button>
           ) : (
             <Button className="rounded-full" onClick={advance}>
-              Next card
-            </Button>
+            {t('Next card')}
+          </Button>
           )}
         </div>
       )}
@@ -170,12 +174,13 @@ function FlashcardsPage() {
 }
 
 function Missing({ title, body }: { title: string; body: string }) {
+  const { t, locale } = useLocale();
   return (
     <div className="mx-auto max-w-md px-5 pt-20 text-center">
       <h1 className="font-display text-2xl font-semibold">{title}</h1>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
       <Button asChild className="mt-6 rounded-full">
-        <Link to="/review">Back to Review</Link>
+        <Link to="/review">{t('Back to Review')}</Link>
       </Button>
     </div>
   );
