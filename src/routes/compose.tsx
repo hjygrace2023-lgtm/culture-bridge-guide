@@ -182,7 +182,7 @@ function ComposePage() {
               <option value="">{t("Not specified")}</option>
               {Object.entries(RELATIONSHIP_LABEL).map(([k, v]) => (
                 <option key={k} value={k}>
-                  {k === "other" ? t("Other (describe it)") : v}
+                  {k === "other" ? t("Other (describe it)") : t(v)}
                 </option>
               ))}
             </select>

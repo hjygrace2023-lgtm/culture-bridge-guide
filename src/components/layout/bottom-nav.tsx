@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/lib/i18n/store";
 
 /** Restrained, typographic navigation — the content stays dominant. */
 const items = [
@@ -11,6 +12,7 @@ const items = [
 ] as const;
 
 export function BottomNav() {
+  const { t } = useLocale();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
@@ -34,7 +36,7 @@ export function BottomNav() {
                     active ? "bg-yellow" : "bg-foreground/30",
                   )}
                 />
-                {item.label}
+                {t(item.label)}
               </Link>
             </li>
           );

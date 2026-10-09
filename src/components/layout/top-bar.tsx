@@ -5,12 +5,14 @@ import { searchRegions } from "@/lib/analysis/regions";
 import { useCultureContext } from "@/lib/culture/store";
 import { useSession } from "@/lib/auth/session";
 import { Button } from "@/components/ui/button";
+import { LOCALES, useLocale, type Locale } from "@/lib/i18n/store";
 
 /**
  * Restrained poster header: wordmark, a thick ink rule, and a minimal
  * underlined context field. It writes to the same shared culture store.
  */
 export function TopBar() {
+  const { t, locale, setLocale } = useLocale();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -53,7 +55,7 @@ export function TopBar() {
                 setOpen(false);
               }
             }}
-            placeholder={culture ? `Context: ${culture}` : "Set a context"}
+            placeholder={culture ? `${t("Context:")} ${culture}` : t("Set a context")}
             aria-label="Set the cultural context"
             className="h-9 w-full truncate border-0 border-b-2 border-foreground bg-transparent pr-7 text-sm font-medium outline-none placeholder:text-foreground/45 focus:border-foreground"
           />
@@ -122,10 +124,22 @@ export function TopBar() {
             </div>
           )}
         </div>
+        <select
+          value={locale}
+          onChange={(e) => setLocale(e.target.value as Locale)}
+          aria-label={t("Language")}
+          className="h-9 shrink-0 cursor-pointer border-2 border-foreground bg-background px-1.5 text-xs font-bold outline-none hover:bg-yellow"
+        >
+          {LOCALES.map((l) => (
+            <option key={l.code} value={l.code}>
+              {l.label}
+            </option>
+          ))}
+        </select>
         <Button asChild variant="outline" size="sm" className="shrink-0 px-2.5 sm:px-3">
           <Link to={session ? "/account" : "/auth"} aria-label={session ? "Open account" : "Sign in"}>
             <UserRound className="h-4 w-4" />
-            <span className="hidden sm:inline">{session ? "Account" : "Sign in"}</span>
+            <span className="hidden sm:inline">{session ? t("Account") : t("Sign in")}</span>
           </Link>
         </Button>
       </div>
