@@ -7,14 +7,14 @@ export const Route = createFileRoute("/about")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Methodology — CultureLens" },
+      { title: t("Methodology \u2014 CultureLens") },
       {
         name: "description",
         content:
-          "How CultureLens reasons: intercultural conflict-resolution principles, and why it offers possibilities rather than verdicts.",
+          t("How CultureLens reasons: intercultural conflict-resolution principles, and why it offers possibilities rather than verdicts."),
       },
-      { property: "og:title", content: "Methodology — CultureLens" },
-      { property: "og:description", content: "Principles, limits, and responsible-use commitments." },
+      { property: "og:title", content: t("Methodology \u2014 CultureLens") },
+      { property: "og:description", content: t("Principles, limits, and responsible-use commitments.") },
     ],
   }),
   component: AboutPage,

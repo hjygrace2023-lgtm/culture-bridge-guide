@@ -25,27 +25,27 @@ function shorten(text: string, max = 220) {
   return clean.length > max ? `${clean.slice(0, max - 1).trim()}…` : clean;
 }
 
-export function buildStudySet(analysis: Analysis): StudyCard[] {
+export function buildStudySet(analysis: Analysis, t: (text: string, values?: Record<string, string | number>) => string = (text) => text): StudyCard[] {
   const cards: StudyCard[] = [];
 
   if (analysis.interpretations.length > 0) {
     cards.push({
       id: `${analysis.id}:interpretation`,
       kind: "interpretation",
-      label: "Interpretations",
+      label: t("Interpretations"),
       front: shorten(analysis.input.exactWords?.trim() || analysis.input.situation),
-      prompt: "What might this have meant? Hold two or three readings in mind before revealing.",
+      prompt: t("What might this have meant? Hold two or three readings in mind before revealing."),
       back: [
-        { heading: "Read literally", items: [analysis.literalMeaning] },
+        { heading: t("Read literally"), items: [analysis.literalMeaning] },
         {
-          heading: "Plausible readings",
+          heading: t("Plausible readings"),
           items: analysis.interpretations
             .slice(0, 4)
-            .map((i) => `${i.title} — ${i.mightHaveMeant} (${PLAUSIBILITY_LABEL[i.plausibility]})`),
+            .map((i) => `${i.title} — ${i.mightHaveMeant} (${t(PLAUSIBILITY_LABEL[i.plausibility])})`),
         },
       ],
       reminder:
-        "These are possibilities, not verdicts. The same words can carry different meanings for two people from the same place.",
+        t("These are possibilities, not verdicts. The same words can carry different meanings for two people from the same place."),
     });
   }
 
@@ -53,14 +53,14 @@ export function buildStudySet(analysis: Analysis): StudyCard[] {
     cards.push({
       id: `${analysis.id}:facts`,
       kind: "facts",
-      label: "Facts vs assumptions",
+      label: t("Facts vs assumptions"),
       front: shorten(analysis.input.situation),
-      prompt: "What did you actually observe here, and what did you add yourself?",
+      prompt: t("What did you actually observe here, and what did you add yourself?"),
       back: [
-        { heading: "Observed", items: analysis.observed },
-        { heading: "Inferred (added by you or by me)", items: analysis.inferred },
+        { heading: t("Observed"), items: analysis.observed },
+        { heading: t("Inferred (added by you or by me)"), items: analysis.inferred },
       ],
-      reminder: "Inferences are useful working guesses — they just aren't evidence yet.",
+      reminder: t("Inferences are useful working guesses \u2014 they just aren't evidence yet."),
     });
   }
 
@@ -70,18 +70,18 @@ export function buildStudySet(analysis: Analysis): StudyCard[] {
     cards.push({
       id: `${analysis.id}:strategy`,
       kind: "strategy",
-      label: "Responding",
+      label: t("Responding"),
       front: shorten(analysis.title),
-      prompt: "What would be the most useful next step here?",
+      prompt: t("What would be the most useful next step here?"),
       back: [
-        { heading: "Suggested strategy", items: [`${analysis.strategy.name} — ${analysis.strategy.why}`] },
+        { heading: t("Suggested strategy"), items: [`${analysis.strategy.name} — ${analysis.strategy.why}`] },
         {
-          heading: "Something you could say",
+          heading: t("Something you could say"),
           items: [analysis.clarificationQuestion, balanced].filter(Boolean) as string[],
         },
-        ...(analysis.strategy.cautions ? [{ heading: "Worth weighing", items: [analysis.strategy.cautions] }] : []),
+        ...(analysis.strategy.cautions ? [{ heading: t("Worth weighing"), items: [analysis.strategy.cautions] }] : []),
       ],
-      reminder: "A strategy that worked once does not transfer identically to the next situation.",
+      reminder: t("A strategy that worked once does not transfer identically to the next situation."),
     });
   }
 
@@ -104,7 +104,7 @@ export interface QuizQuestion {
   explanation: string;
 }
 
-export function buildQuiz(analysis: Analysis): QuizQuestion[] {
+export function buildQuiz(analysis: Analysis, t: (text: string, values?: Record<string, string | number>) => string = (text) => text): QuizQuestion[] {
   const questions: QuizQuestion[] = [];
   const top = analysis.interpretations[0];
   const second = analysis.interpretations[1];
@@ -112,39 +112,39 @@ export function buildQuiz(analysis: Analysis): QuizQuestion[] {
   if (top && second) {
     questions.push({
       id: `${analysis.id}:q-interpretation`,
-      question: "Which reading of this exchange is best justified by what you actually know?",
+      question: t("Which reading of this exchange is best justified by what you actually know?"),
       options: shuffle(
         [
           {
             id: "a",
-            text: `${top.mightHaveMeant} — though this remains one plausible reading among several.`,
+            text: t("{reading} — though this remains one plausible reading among several.", { reading: top.mightHaveMeant }),
             correct: true,
-            feedback: "Yes. It stays close to the evidence and leaves room for other readings.",
+            feedback: t("Yes. It stays close to the evidence and leaves room for other readings."),
           },
           {
             id: "b",
-            text: `People from that background always mean ${second.mightHaveMeant.toLowerCase()}`,
+            text: t("People from that background always mean {reading}", { reading: second.mightHaveMeant }),
             correct: false,
-            feedback: "A whole group never shares one fixed meaning. Background shifts probabilities, never certainties.",
+            feedback: t("A whole group never shares one fixed meaning. Background shifts probabilities, never certainties."),
           },
           {
             id: "c",
-            text: "They were clearly being rude, and the intention behind it is not in doubt.",
+            text: t("They were clearly being rude, and the intention behind it is not in doubt."),
             correct: false,
-            feedback: "Certainty about intention is exactly what this situation does not give you.",
+            feedback: t("Certainty about intention is exactly what this situation does not give you."),
           },
           {
             id: "d",
-            text: "Nothing at all can be said until they explain themselves.",
+            text: t("Nothing at all can be said until they explain themselves."),
             correct: false,
-            feedback: "You can hold careful hypotheses while you wait for more information.",
+            feedback: t("You can hold careful hypotheses while you wait for more information."),
           },
         ],
         analysis.id.length,
       ),
       explanation:
         top.whyPlausible ||
-        "The most defensible reading stays tentative and points at the clues that support it.",
+        t("The most defensible reading stays tentative and points at the clues that support it."),
     });
   }
 
@@ -153,21 +153,21 @@ export function buildQuiz(analysis: Analysis): QuizQuestion[] {
   if (inferred && observedThree.length >= 3) {
     questions.push({
       id: `${analysis.id}:q-facts`,
-      question: "Which of these is an inference rather than something you observed?",
+      question: t("Which of these is an inference rather than something you observed?"),
       options: shuffle(
         [
-          { id: "a", text: inferred, correct: true, feedback: "Correct — this is a guess about meaning, not an observation." },
+          { id: "a", text: inferred, correct: true, feedback: t("Correct \u2014 this is a guess about meaning, not an observation.") },
           ...observedThree.map((o, i) => ({
             id: `o${i}`,
             text: o,
             correct: false,
-            feedback: "This one is observable — it happened, whatever it meant.",
+            feedback: t("This one is observable \u2014 it happened, whatever it meant."),
           })),
         ],
         analysis.id.length + 1,
       ),
       explanation:
-        "Separating what happened from what you concluded is the quickest way to notice an assumption before acting on it.",
+        t("Separating what happened from what you concluded is the quickest way to notice an assumption before acting on it."),
     });
   }
 
@@ -175,36 +175,36 @@ export function buildQuiz(analysis: Analysis): QuizQuestion[] {
     const gentle = analysis.responses.find((r) => r.style === "gentle");
     questions.push({
       id: `${analysis.id}:q-strategy`,
-      question: "Given your goal here, which response is most likely to help?",
+      question: t("Given your goal here, which response is most likely to help?"),
       options: shuffle(
         [
           {
             id: "a",
             text: `${analysis.strategy.name}: ${analysis.clarificationQuestion}`,
             correct: true,
-            feedback: "Yes — it seeks information before assigning intent.",
+            feedback: t("Yes \u2014 it seeks information before assigning intent."),
           },
           {
             id: "b",
-            text: "Tell them their culture's way of communicating is the problem.",
+            text: t("Tell them their culture's way of communicating is the problem."),
             correct: false,
-            feedback: "Framing a group as the problem closes the conversation and rarely reflects the individual.",
+            feedback: t("Framing a group as the problem closes the conversation and rarely reflects the individual."),
           },
           {
             id: "c",
-            text: "Say nothing, and quietly decide what they meant.",
+            text: t("Say nothing, and quietly decide what they meant."),
             correct: false,
-            feedback: "Understandable, but it locks in an assumption you can't check.",
+            feedback: t("Understandable, but it locks in an assumption you can't check."),
           },
           {
             id: "d",
             text: gentle
-              ? `${gentle.wording} — and then treat the matter as fully settled.`
-              : "Apologise immediately, whether or not anything went wrong.",
+              ? t("{wording} — and then treat the matter as fully settled.", { wording: gentle.wording })
+              : t("Apologise immediately, whether or not anything went wrong."),
             correct: false,
             feedback: gentle
-              ? "The wording is fine; treating it as settled is the part that misfires."
-              : "Pre-emptive apology can work, but it can also confirm a misreading.",
+              ? t("The wording is fine; treating it as settled is the part that misfires.")
+              : t("Pre-emptive apology can work, but it can also confirm a misreading."),
           },
         ],
         analysis.id.length + 2,
@@ -212,7 +212,7 @@ export function buildQuiz(analysis: Analysis): QuizQuestion[] {
       explanation: [
         analysis.strategy.why,
         analysis.responses.length > 1
-          ? "More than one reply could work here — a gentler wording protects the relationship, a more direct one gets clarity faster. The trade-off is yours to choose."
+          ? t("More than one reply could work here \u2014 a gentler wording protects the relationship, a more direct one gets clarity faster. The trade-off is yours to choose.")
           : null,
       ]
         .filter(Boolean)

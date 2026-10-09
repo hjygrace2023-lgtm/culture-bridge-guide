@@ -13,13 +13,13 @@ export const Route = createFileRoute("/saved")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Saved scenarios — CultureLens" },
+      { title: t("Saved scenarios \u2014 CultureLens") },
       {
         name: "description",
-        content: "Revisit the situations you saved, or practise them as flashcards to build your own judgement.",
+        content: t("Revisit the situations you saved, or practise them as flashcards to build your own judgement."),
       },
-      { property: "og:title", content: "Saved scenarios — CultureLens" },
-      { property: "og:description", content: "Reopen a scenario, or flip through them as flashcards." },
+      { property: "og:title", content: t("Saved scenarios \u2014 CultureLens") },
+      { property: "og:description", content: t("Reopen a scenario, or flip through them as flashcards.") },
     ],
   }),
   component: SavedPage,
@@ -56,7 +56,7 @@ function SavedPage() {
                 mode === m ? "bg-foreground text-background" : "hover:bg-yellow",
               )}
             >
-              {m === "list" ? "List" : "Flashcards"}
+              {m === "list" ? t("List") : t("Flashcards")}
             </button>
           ))}
         </div>
@@ -99,7 +99,7 @@ function ScenarioRow({
 }: {
   scenario: SavedScenario;
   delay: number;
-  onDelete: () => void;
+  onDelete: () => {t("void;")}
 }) {
   const { t, locale } = useLocale();
   const navigate = useNavigate();
@@ -114,7 +114,7 @@ function ScenarioRow({
         </div>
         <button
           onClick={onDelete}
-          aria-label={t("Delete {title}", { title: scenario.title })}
+          aria-label={t("Delete {t(title)}", { title: scenario.title })}
           className="shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
@@ -145,14 +145,14 @@ function ScenarioRow({
 
 function FlashcardDeck({ scenarios }: { scenarios: SavedScenario[] }) {
   const { t, locale } = useLocale();
-  const [order, setOrder] = useState<number[]>(() => scenarios.map((_, i) => i));
+  const [order, setOrder] = useState<number[]>(() => scenarios.map((_, i) => {t("i));")}
   const [pos, setPos] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
   const index = order[Math.min(pos, order.length - 1)] ?? 0;
   const scenario = scenarios[index];
   const top = useMemo(
-    () => scenario?.analysis.interpretations.slice(0, 3) ?? [],
+    () => {t("scenario?.analysis.interpretations.slice(0, 3) ?? [],")}
     [scenario],
   );
 
@@ -167,17 +167,17 @@ function FlashcardDeck({ scenarios }: { scenarios: SavedScenario[] }) {
     <div className="mt-6">
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span>
-          Card {pos + 1} of {order.length}
+          {t("Card {current} of {total}", { current: pos + 1, total: order.length })}
         </span>
         <button
           onClick={() => {
-            setOrder((o) => [...o].sort(() => Math.random() - 0.5));
+            setOrder((o) => [...o].sort(() => {t("Math.random() - 0.5));")}
             setPos(0);
             setFlipped(false);
           }}
           className="inline-flex items-center gap-1 font-medium text-primary"
         >
-          <Shuffle className="h-3.5 w-3.5" /> Shuffle
+          <Shuffle className="h-3.5 w-3.5" /> {t("Shuffle")}
         </button>
       </div>
 
@@ -192,7 +192,7 @@ function FlashcardDeck({ scenarios }: { scenarios: SavedScenario[] }) {
             <p className="mt-3 text-sm leading-relaxed">{scenario.analysis.input.situation}</p>
             <p className="mt-4 text-xs text-muted-foreground">{t(scenario.setting)}</p>
             <p className="mt-6 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <RotateCw className="h-3.5 w-3.5" /> Think of two possible readings, then tap to reveal
+              <RotateCw className="h-3.5 w-3.5" /> {t("Think of two possible readings, then tap to reveal")}
             </p>
           </div>
         ) : (
@@ -220,13 +220,13 @@ function FlashcardDeck({ scenarios }: { scenarios: SavedScenario[] }) {
 
       <div className="mt-3 flex items-center justify-between">
         <Button variant="secondary" size="sm" className="rounded-full" onClick={() => go(-1)}>
-          <ChevronLeft className="mr-1 h-4 w-4" /> Previous
+          <ChevronLeft className="mr-1 h-4 w-4" /> {t("Previous")}
         </Button>
         <Button variant="secondary" size="sm" className="rounded-full" onClick={() => setFlipped((f) => !f)}>
-          {flipped ? "Hide" : "Reveal"}
+          {flipped ? t("Hide") : t("Reveal")}
         </Button>
         <Button variant="secondary" size="sm" className="rounded-full" onClick={() => go(1)}>
-          Next <ChevronRight className="ml-1 h-4 w-4" />
+          {t("Next")} <ChevronRight className="ml-1 h-4 w-4" />
         </Button>
       </div>
     </div>

@@ -12,13 +12,13 @@ export const Route = createFileRoute("/review/$id/quiz")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Quiz — CultureLens" },
+      { title: t("Quiz \u2014 CultureLens") },
       {
         name: "description",
-        content: "A short, gentle quiz drawn from one saved analysis: interpretation, evidence, and response.",
+        content: t("A short, gentle quiz drawn from one saved analysis: interpretation, evidence, and response."),
       },
-      { property: "og:title", content: "Quiz — CultureLens" },
-      { property: "og:description", content: "Practise separating evidence from assumption. No timers, no streaks." },
+      { property: "og:title", content: t("Quiz \u2014 CultureLens") },
+      { property: "og:description", content: t("Practise separating evidence from assumption. No timers, no streaks.") },
     ],
   }),
   component: QuizPage,
@@ -30,8 +30,8 @@ function QuizPage() {
   const { scenarios, hydrated } = useSavedScenarios();
   const { recordQuiz } = useReviewProgress();
 
-  const scenario = scenarios.find((s) => s.id === id);
-  const questions = useMemo(() => (scenario ? buildQuiz(scenario.analysis) : []), [scenario]);
+  const scenario = scenarios.find((s) => {t("s.id === id);")}
+  const questions = useMemo(() => (scenario ? buildQuiz(scenario.analysis, t) : []), [scenario, t]);
 
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<QuizOption | null>(null);
@@ -51,12 +51,12 @@ function QuizPage() {
     return (
       <div className="mx-auto max-w-md px-5 pt-20 text-center">
         <h1 className="font-display text-2xl font-semibold">
-          {scenario ? "No questions for this one" : "That scenario isn't saved"}
+          {scenario ? t("No questions for this one") : t("That scenario isn't saved")}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           {scenario
-            ? "This saved analysis doesn't carry enough detail to build fair questions. The flashcards may still help."
-            : "It may have been deleted from this browser. Choose another scenario from the Review hub."}
+            ? t("This saved analysis doesn't carry enough detail to build fair questions. The flashcards may still help.")
+            : t("It may have been deleted from this browser. Choose another scenario from the Review hub.")}
         </p>
         <div className="mt-6 flex justify-center gap-2">
           {scenario && (
@@ -80,18 +80,18 @@ function QuizPage() {
         <div className="animate-rise card-surface p-6 text-center">
           <h1 className="font-display text-2xl font-semibold">{t('Nicely done')}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {questions.length} question{questions.length === 1 ? "" : "s"} completed · {correct} answered as expected
+            {t("Completed: {total} · Answered as expected: {correct}", { total: questions.length, correct })}
           </p>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
             {missed === 0
-              ? "You consistently chose the reading that stayed close to the evidence. That habit — hedging where the facts run out — is what carries across to new situations."
-              : "The useful part isn't the score. Notice which options tempted you: absolute claims about a group, or certainty about intention, are the two that most often mislead."}
+              ? t("You consistently chose the reading that stayed close to the evidence. That habit \u2014 hedging where the facts run out \u2014 is what carries across to new situations.")
+              : t("The useful part isn't the score. Notice which options tempted you: absolute claims about a group, or certainty about intention, are the two that most often mislead.")}
           </p>
           <div className="mt-6 grid gap-2 sm:grid-cols-3">
             {missed > 0 && (
               <Button asChild variant="secondary" className="rounded-full">
                 <Link to="/review/$id/flashcards" params={{ id }}>
-                  <Layers className="mr-1.5 h-4 w-4" /> Review missed cards
+                  <Layers className="mr-1.5 h-4 w-4" /> {t("Review missed cards")}
                 </Link>
               </Button>
             )}
@@ -106,7 +106,7 @@ function QuizPage() {
                 setDone(false);
               }}
             >
-              <RotateCw className="mr-1.5 h-4 w-4" /> Try again
+              <RotateCw className="mr-1.5 h-4 w-4" /> {t("Try again")}
             </Button>
             <Button asChild className="rounded-full">
               <Link to="/review">{t('Back to Review Hub')}</Link>
@@ -117,13 +117,14 @@ function QuizPage() {
     );
   }
 
-  const q = questions[index]!;
+  const q = questions[index];
+  if (!q) return null;
 
   const choose = (option: QuizOption) => {
     if (picked) return;
     setPicked(option);
-    if (option.correct) setCorrect((c) => c + 1);
-    else setMissed((m) => m + 1);
+    if (option.correct) setCorrect((c) => {t("c + 1);")}
+    else setMissed((m) => {t("m + 1);")}
   };
 
   const next = () => {
@@ -131,7 +132,7 @@ function QuizPage() {
       recordQuiz(id, correct, questions.length);
       setDone(true);
     } else {
-      setIndex((i) => i + 1);
+      setIndex((i) => {t("i + 1);")}
       setPicked(null);
     }
   };
@@ -141,11 +142,11 @@ function QuizPage() {
       <div className="animate-rise flex items-center justify-between gap-3">
         <Button asChild variant="ghost" size="sm" className="-ml-2 rounded-full">
           <Link to="/review">
-            <ArrowLeft className="mr-1.5 h-4 w-4" /> Review
+            <ArrowLeft className="mr-1.5 h-4 w-4" /> {t("Review")}
           </Link>
         </Button>
         <span className="text-xs text-muted-foreground">
-          Question {index + 1} of {questions.length}
+          {t("Question {current} of {total}", { current: index + 1, total: questions.length })}
         </span>
       </div>
 
@@ -192,7 +193,7 @@ function QuizPage() {
             <p className="text-sm leading-relaxed">{t(picked.feedback)}</p>
             <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t(q.explanation)}</p>
             <Button className="mt-5 w-full rounded-full" onClick={next}>
-              {index + 1 >= questions.length ? "See reflection" : "Next question"}
+              {index + 1 >= questions.length ? t("See reflection") : t("Next question")}
             </Button>
           </div>
         )}

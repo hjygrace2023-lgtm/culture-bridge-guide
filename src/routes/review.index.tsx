@@ -13,14 +13,14 @@ export const Route = createFileRoute("/review/")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Review — CultureLens" },
+      { title: t("Review \u2014 CultureLens") },
       {
         name: "description",
         content:
-          "Revisit saved situations as flashcards or a short quiz, and practise noticing assumptions before acting on them.",
+          t("Revisit saved situations as flashcards or a short quiz, and practise noticing assumptions before acting on them."),
       },
-      { property: "og:title", content: "Learn from past conversations — CultureLens" },
-      { property: "og:description", content: "Flashcards and quizzes built from the scenarios you saved." },
+      { property: "og:title", content: t("Learn from past conversations \u2014 CultureLens") },
+      { property: "og:description", content: t("Flashcards and quizzes built from the scenarios you saved.") },
     ],
   }),
   component: ReviewHub,
@@ -40,14 +40,14 @@ function ReviewHub() {
   }, []);
 
   const gaps = useMemo(
-    () => Array.from(new Set(scenarios.map((s) => s.mainGap))).sort(),
+    () => Array.from(new Set(scenarios.map((s) => {t("s.mainGap))).sort(),")}
     [scenarios],
   );
 
   const visible = useMemo(() => {
-    if (filter === "selected") return scenarios.filter((s) => s.id === currentId);
+    if (filter === "selected") return scenarios.filter((s) => {t("s.id === currentId);")}
     if (filter === "all") return scenarios;
-    return scenarios.filter((s) => s.mainGap === filter);
+    return scenarios.filter((s) => {t("s.mainGap === filter);")}
   }, [scenarios, filter, currentId]);
 
   return (
@@ -74,7 +74,7 @@ function ReviewHub() {
           </p>
           <Button asChild className="mt-5 rounded-full">
             <Link to="/analyse">
-              <Compass className="mr-1.5 h-4 w-4" /> Analyse a situation
+              <Compass className="mr-1.5 h-4 w-4" /> {t("Analyse a situation")}
             </Link>
           </Button>
         </div>
@@ -84,14 +84,14 @@ function ReviewHub() {
             <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
             {t('All saved')}
           </FilterChip>
-            {currentId && scenarios.some((s) => s.id === currentId) && (
+            {currentId && scenarios.some((s) => {t("s.id === currentId) && (")}
               <FilterChip active={filter === "selected"} onClick={() => setFilter("selected")}>
             {t('Current scenario')}
           </FilterChip>
             )}
             {gaps.map((g) => (
-              <FilterChip key={g} active={filter === g} onClick={() => setFilter(g)}>
-                {g}
+              <FilterChip key={t(g)} active={filter === g} onClick={() => setFilter(g)}>
+                {t(g)}
               </FilterChip>
             ))}
           </div>
@@ -129,7 +129,7 @@ function FilterChip({
   children,
 }: {
   active: boolean;
-  onClick: () => void;
+  onClick: () => {t("void;")}
   children: React.ReactNode;
 }) {
   const { t, locale } = useLocale();
@@ -159,11 +159,11 @@ function ScenarioCard({
   scenario: SavedScenario;
   delay: number;
   progress: ReturnType<ReturnType<typeof useReviewProgress>["get"]>;
-  onDelete: () => void;
+  onDelete: () => {t("void;")}
 }) {
   const { t, locale } = useLocale();
   const navigate = useNavigate();
-  const cards = useMemo(() => buildStudySet(scenario.analysis), [scenario]);
+  const cards = useMemo(() => {t("buildStudySet(scenario.analysis, t), [scenario, t]);")}
   const mastered = masteredCount(cards, progress);
 
   return (
@@ -177,7 +177,7 @@ function ScenarioCard({
         </div>
         <button
           onClick={onDelete}
-          aria-label={t("Delete {title}", { title: scenario.title })}
+          aria-label={t("Delete {t(title)}", { title: scenario.title })}
           className="shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
@@ -195,10 +195,10 @@ function ScenarioCard({
 
       <p className="mt-3 text-xs text-muted-foreground">
         {cards.length === 0
-          ? "This analysis is too sparse for study cards."
-          : `${mastered} of ${cards.length} cards marked understood`}
+          ? t("This analysis is too sparse for study cards.")
+          : t("{count} of {total} cards marked understood", { count: mastered, total: cards.length })}
         {progress.lastTotal
-          ? ` · last quiz ${progress.lastCorrect}/${progress.lastTotal}`
+          ? ` · ${t("Last quiz: {correct}/{total}", { correct: progress.lastCorrect ?? 0, total: progress.lastTotal })}`
           : ""}
       </p>
 
@@ -216,12 +216,12 @@ function ScenarioCard({
           </Button>
         <Button asChild size="sm" variant="secondary" className="rounded-full text-xs" disabled={cards.length === 0}>
           <Link to="/review/$id/flashcards" params={{ id: scenario.id }}>
-            <Layers className="mr-1.5 h-3.5 w-3.5" /> Flashcards
+            <Layers className="mr-1.5 h-3.5 w-3.5" /> {t("Flashcards")}
           </Link>
         </Button>
         <Button asChild size="sm" className="rounded-full text-xs">
           <Link to="/review/$id/quiz" params={{ id: scenario.id }}>
-            <GraduationCap className="mr-1.5 h-3.5 w-3.5" /> Quiz
+            <GraduationCap className="mr-1.5 h-3.5 w-3.5" /> {t("Quiz")}
           </Link>
         </Button>
       </div>

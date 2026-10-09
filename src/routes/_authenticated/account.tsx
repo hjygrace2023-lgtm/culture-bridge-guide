@@ -21,10 +21,10 @@ export const Route = createFileRoute("/_authenticated/account")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Your account — CultureLens" },
-      { name: "description", content: "Your display name, picture and saved analysis history." },
-      { property: "og:title", content: "Your account — CultureLens" },
-      { property: "og:description", content: "Manage your profile and review your saved history." },
+      { title: t("Your account \u2014 CultureLens") },
+      { name: "description", content: t("Your display name, picture and saved analysis history.") },
+      { property: "og:title", content: t("Your account \u2014 CultureLens") },
+      { property: "og:description", content: t("Manage your profile and review your saved history.") },
     ],
   }),
   component: AccountPage,
@@ -84,7 +84,7 @@ function AccountPage() {
       if (signError) throw signError;
       save.mutate({ avatarUrl: signed.signedUrl });
     } catch (err) {
-      setNotice(err instanceof Error ? err.message : "The picture couldn't be uploaded.");
+      setNotice(err instanceof Error ? err.message : t("The picture couldn't be uploaded."));
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
@@ -135,7 +135,7 @@ function AccountPage() {
           </Label>
           <Input
             id="display-name"
-            value={t(name)}
+            value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={t('Your name')}
             className="mt-1.5"
@@ -146,15 +146,15 @@ function AccountPage() {
       <div className="mt-4 flex flex-wrap gap-3">
         <Button type="button" variant="accent" onClick={() => save.mutate({ displayName: name })} disabled={save.isPending}>
           {save.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          Save name
+          {t("Save name")}
         </Button>
         <Button type="button" variant="outline" onClick={() => fileRef.current?.click()} disabled={uploading}>
           {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          Change picture
+          {t("Change picture")}
         </Button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPickPicture} />
       </div>
-      {notice && <p className="mt-3 text-xs text-muted-foreground">{notice}</p>}
+      {notice && <p className="mt-3 text-xs text-muted-foreground">{t(notice)}</p>}
 
       <hr className="rule-thick mt-8" />
       <h2 className="mt-5 font-display text-xl font-extrabold tracking-tight">{t('History')}</h2>
@@ -175,13 +175,13 @@ function AccountPage() {
               <div className="min-w-0">
                 <p className="truncate font-display text-base font-bold">{entry.title}</p>
                 <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
-                  {entry.kind === "compose" ? "Compose" : "Analyse"} ·{" "}
+                  {entry.kind === "compose" ? t("Compose") : t("Analyse")} ·{" "}
                   {new Date(entry.createdAt).toLocaleDateString(locale)}
                 </p>
               </div>
               <button
                 type="button"
-                aria-label={t("Delete {title}", { title: entry.title })}
+                aria-label={t("Delete {t(title)}", { title: entry.title })}
                 onClick={() => removeEntry.mutate(entry.id)}
                 className="shrink-0 p-2 text-foreground/60 transition-colors hover:text-destructive"
               >
