@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Check, Eye, GraduationCap, RotateCw } from "lucide-react";
@@ -8,29 +9,32 @@ import { buildStudySet, orderCards, useReviewProgress, type StudyCard } from "@/
 export const Route = createFileRoute("/review/$id/flashcards")({
   head: () => ({
     meta: [
-      { title: "Flashcards — CultureLens" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: t("Flashcards \u2014 CultureLens") },
       {
         name: "description",
-        content: "Turn a saved situation over in your mind one card at a time: interpretations, facts, response.",
+        content: t("Turn a saved situation over in your mind one card at a time: interpretations, facts, response."),
       },
-      { property: "og:title", content: "Flashcards — CultureLens" },
-      { property: "og:description", content: "A calm, three-card review of one saved situation." },
+      { property: "og:title", content: t("Flashcards \u2014 CultureLens") },
+      { property: "og:description", content: t("A calm, three-card review of one saved situation.") },
     ],
   }),
   component: FlashcardsPage,
 });
 
 function FlashcardsPage() {
+  const { t, locale } = useLocale();
   const { id } = Route.useParams();
   const { scenarios, hydrated } = useSavedScenarios();
   const { get, hydrated: progressReady, markCard } = useReviewProgress();
 
-  const scenario = scenarios.find((s) => s.id === id);
+  const scenario = scenarios.find((s) => {t("s.id === id);")}
   const [deck, setDeck] = useState<StudyCard[] | null>(null);
   const [pos, setPos] = useState(0);
   const [revealed, setRevealed] = useState(false);
 
-  const cards = useMemo(() => (scenario ? buildStudySet(scenario.analysis) : []), [scenario]);
+  const cards = useMemo(() => (scenario ? buildStudySet(scenario.analysis, t) : []), [scenario, t]);
   const progress = get(id);
 
   // Order once per session so marking a card doesn't reshuffle underneath you.
@@ -50,23 +54,25 @@ function FlashcardsPage() {
   if (!scenario || cards.length === 0) {
     return (
       <Missing
-        title={scenario ? "Not enough to study here" : "That scenario isn't saved"}
+        title={scenario ? t("Not enough to study here") : t("That scenario isn't saved")}
         body={
           scenario
-            ? "This analysis doesn't contain enough detail to build study cards. Try reviewing another saved scenario."
-            : "It may have been deleted from this browser. Pick another one from the Review hub."
+            ? t("This analysis doesn't contain enough detail to build study cards. Try reviewing another saved scenario.")
+            : t("It may have been deleted from this browser. Pick another one from the Review hub.")
         }
       />
     );
   }
 
   const list = deck ?? cards;
-  const card = list[Math.min(pos, list.length - 1)] as StudyCard;
+  const orderedCard = list[Math.min(pos, list.length - 1)];
+  const card = cards.find((item) => item.id === orderedCard?.id);
+  if (!card) return null;
   const status = progress.cards[card.id];
 
   const advance = () => {
     setRevealed(false);
-    setPos((p) => Math.min(p + 1, list.length - 1));
+    setPos((p) => {t("Math.min(p + 1, list.length - 1));")}
   };
   const atEnd = pos >= list.length - 1;
 
@@ -75,11 +81,11 @@ function FlashcardsPage() {
       <div className="animate-rise flex items-center justify-between gap-3">
         <Button asChild variant="ghost" size="sm" className="rounded-full -ml-2">
           <Link to="/review">
-            <ArrowLeft className="mr-1.5 h-4 w-4" /> Review
+            <ArrowLeft className="mr-1.5 h-4 w-4" /> {t("Review")}
           </Link>
         </Button>
         <span className="text-xs text-muted-foreground">
-          Card {pos + 1} of {list.length}
+          {t("Card {current} of {total}", { current: pos + 1, total: list.length })}
         </span>
       </div>
 
@@ -93,20 +99,20 @@ function FlashcardsPage() {
       </div>
 
       <article className="animate-rise card-surface mt-4 p-6">
-        <p className="text-xs font-medium uppercase tracking-wide text-primary">{card.label}</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-primary">{t(card.label)}</p>
         <p className="mt-3 text-sm leading-relaxed">{card.front}</p>
-        <p className="mt-4 text-sm font-medium">{card.prompt}</p>
+        <p className="mt-4 text-sm font-medium">{t(card.prompt)}</p>
 
         {!revealed ? (
           <Button className="mt-6 w-full rounded-full" onClick={() => setRevealed(true)}>
-            <Eye className="mr-1.5 h-4 w-4" /> Reveal insight
+            <Eye className="mr-1.5 h-4 w-4" /> {t("Reveal insight")}
           </Button>
         ) : (
           <div className="animate-flip mt-6 border-t border-border pt-5" aria-live="polite">
             {card.back.map((section) => (
-              <section key={section.heading} className="mt-4 first:mt-0">
+              <section key={t(section.heading)} className="mt-4 first:mt-0">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {section.heading}
+                  {t(section.heading)}
                 </h2>
                 <ul className="mt-2 space-y-2">
                   {section.items.map((item) => (
@@ -117,7 +123,7 @@ function FlashcardsPage() {
                 </ul>
               </section>
             ))}
-            <p className="mt-5 text-xs leading-relaxed text-muted-foreground">{card.reminder}</p>
+            <p className="mt-5 text-xs leading-relaxed text-muted-foreground">{t(card.reminder)}</p>
           </div>
         )}
       </article>
@@ -132,7 +138,7 @@ function FlashcardsPage() {
               atEnd ? setRevealed(false) : advance();
             }}
           >
-            <RotateCw className="mr-1.5 h-4 w-4" /> Review again
+            <RotateCw className="mr-1.5 h-4 w-4" /> {t("Review again")}
           </Button>
           <Button
             variant="secondary"
@@ -142,18 +148,18 @@ function FlashcardsPage() {
               atEnd ? setRevealed(false) : advance();
             }}
           >
-            <Check className="mr-1.5 h-4 w-4" /> I understand
+            <Check className="mr-1.5 h-4 w-4" /> {t("I understand")}
           </Button>
           {atEnd ? (
             <Button asChild className="rounded-full">
               <Link to="/review/$id/quiz" params={{ id }}>
-                <GraduationCap className="mr-1.5 h-4 w-4" /> Try the quiz
+                <GraduationCap className="mr-1.5 h-4 w-4" /> {t("Try the quiz")}
               </Link>
             </Button>
           ) : (
             <Button className="rounded-full" onClick={advance}>
-              Next card
-            </Button>
+            {t('Next card')}
+          </Button>
           )}
         </div>
       )}
@@ -161,8 +167,8 @@ function FlashcardsPage() {
       {status && (
         <p className="mt-3 text-center text-[11px] text-muted-foreground">
           {status === "mastered"
-            ? "Marked as understood — it'll come last next time."
-            : "Marked for another look — it'll come first next time."}
+            ? t("Marked as understood \u2014 it'll come last next time.")
+            : t("Marked for another look \u2014 it'll come first next time.")}
         </p>
       )}
     </div>
@@ -170,12 +176,13 @@ function FlashcardsPage() {
 }
 
 function Missing({ title, body }: { title: string; body: string }) {
+  const { t, locale } = useLocale();
   return (
     <div className="mx-auto max-w-md px-5 pt-20 text-center">
-      <h1 className="font-display text-2xl font-semibold">{title}</h1>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
+      <h1 className="font-display text-2xl font-semibold">{t(title)}</h1>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
       <Button asChild className="mt-6 rounded-full">
-        <Link to="/review">Back to Review</Link>
+        <Link to="/review">{t('Back to Review')}</Link>
       </Button>
     </div>
   );

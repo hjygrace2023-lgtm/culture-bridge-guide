@@ -71,7 +71,9 @@ export function useLocale() {
   useEffect(() => {
     document.documentElement.lang = locale === "zh" ? "zh-Hans" : locale;
   }, [locale]);
-  const t = useCallback((text: string) => translate(locale, text), [locale]);
+  const t = useCallback((text: string, values: Record<string, string | number> = {}) =>
+    translate(locale, text).replace(/\{(\w+)\}/g, (match, key: string) =>
+      values[key] == null ? match : String(values[key])), [locale]);
   return { locale, setLocale, t };
 }
 

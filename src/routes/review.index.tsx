@@ -1,3 +1,4 @@
+import { useLocale } from "@/lib/i18n/store";
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { BookOpen, Compass, GraduationCap, Layers, Trash2 } from "lucide-react";
@@ -10,14 +11,16 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/review/")({
   head: () => ({
     meta: [
-      { title: "Review — CultureLens" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: t("Review \u2014 CultureLens") },
       {
         name: "description",
         content:
-          "Revisit saved situations as flashcards or a short quiz, and practise noticing assumptions before acting on them.",
+          t("Revisit saved situations as flashcards or a short quiz, and practise noticing assumptions before acting on them."),
       },
-      { property: "og:title", content: "Learn from past conversations — CultureLens" },
-      { property: "og:description", content: "Flashcards and quizzes built from the scenarios you saved." },
+      { property: "og:title", content: t("Learn from past conversations \u2014 CultureLens") },
+      { property: "og:description", content: t("Flashcards and quizzes built from the scenarios you saved.") },
     ],
   }),
   component: ReviewHub,
@@ -26,6 +29,7 @@ export const Route = createFileRoute("/review/")({
 type Filter = "selected" | "all" | string;
 
 function ReviewHub() {
+  const { t, locale } = useLocale();
   const { scenarios, hydrated, remove } = useSavedScenarios();
   const { get, hydrated: progressReady } = useReviewProgress();
   const [currentId, setCurrentId] = useState<string | null>(null);
@@ -36,23 +40,23 @@ function ReviewHub() {
   }, []);
 
   const gaps = useMemo(
-    () => Array.from(new Set(scenarios.map((s) => s.mainGap))).sort(),
+    () => Array.from(new Set(scenarios.map((s) => {t("s.mainGap))).sort(),")}
     [scenarios],
   );
 
   const visible = useMemo(() => {
-    if (filter === "selected") return scenarios.filter((s) => s.id === currentId);
+    if (filter === "selected") return scenarios.filter((s) => {t("s.id === currentId);")}
     if (filter === "all") return scenarios;
-    return scenarios.filter((s) => s.mainGap === filter);
+    return scenarios.filter((s) => {t("s.mainGap === filter);")}
   }, [scenarios, filter, currentId]);
 
   return (
     <div className="mx-auto max-w-2xl px-5 pb-10 pt-8">
       <header className="animate-rise">
-        <h1 className="font-display text-3xl font-semibold">Learn from past conversations</h1>
+        <h1 className="font-display text-3xl font-semibold">{t('Learn from past conversations')}</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Revisit situations, notice assumptions, and practise responding with curiosity.
-        </p>
+            {t('Revisit situations, notice assumptions, and practise responding with curiosity.')}
+          </p>
       </header>
 
       {!hydrated || !progressReady ? (
@@ -64,14 +68,13 @@ function ReviewHub() {
       ) : scenarios.length === 0 ? (
         <div className="animate-rise card-surface mt-8 p-8 text-center">
           <BookOpen className="mx-auto h-8 w-8 text-muted-foreground" />
-          <h2 className="mt-3 text-base font-semibold">Nothing to review yet</h2>
+          <h2 className="mt-3 text-base font-semibold">{t('Nothing to review yet')}</h2>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
-            Once you save an analysis, it becomes a small set of cards here — one on interpretations, one on facts
-            versus assumptions, one on responding.
+            {t('Once you save an analysis, it becomes a small set of cards here — one on interpretations, one on facts versus assumptions, one on responding.')}
           </p>
           <Button asChild className="mt-5 rounded-full">
             <Link to="/analyse">
-              <Compass className="mr-1.5 h-4 w-4" /> Analyse a situation
+              <Compass className="mr-1.5 h-4 w-4" /> {t("Analyse a situation")}
             </Link>
           </Button>
         </div>
@@ -79,24 +82,24 @@ function ReviewHub() {
         <>
           <div className="animate-rise mt-6 flex flex-wrap gap-1.5">
             <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
-              All saved
-            </FilterChip>
-            {currentId && scenarios.some((s) => s.id === currentId) && (
+            {t('All saved')}
+          </FilterChip>
+            {currentId && scenarios.some((s) => {t("s.id === currentId) && (")}
               <FilterChip active={filter === "selected"} onClick={() => setFilter("selected")}>
-                Current scenario
-              </FilterChip>
+            {t('Current scenario')}
+          </FilterChip>
             )}
             {gaps.map((g) => (
-              <FilterChip key={g} active={filter === g} onClick={() => setFilter(g)}>
-                {g}
+              <FilterChip key={t(g)} active={filter === g} onClick={() => setFilter(g)}>
+                {t(g)}
               </FilterChip>
             ))}
           </div>
 
           {visible.length === 0 ? (
             <p className="mt-8 text-center text-sm text-muted-foreground">
-              No saved scenarios match this filter.
-            </p>
+            {t('No saved scenarios match this filter.')}
+          </p>
           ) : (
             <ul className="mt-4 space-y-3">
               {visible.map((s, i) => (
@@ -114,8 +117,8 @@ function ReviewHub() {
       )}
 
       <p className="pt-8 text-center text-[11px] leading-relaxed text-muted-foreground">
-        Review at your own pace. There are no streaks or timers here — the point is reflection, not scoring.
-      </p>
+            {t('Review at your own pace. There are no streaks or timers here — the point is reflection, not scoring.')}
+          </p>
     </div>
   );
 }
@@ -126,9 +129,10 @@ function FilterChip({
   children,
 }: {
   active: boolean;
-  onClick: () => void;
+  onClick: () => {t("void;")}
   children: React.ReactNode;
 }) {
+  const { t, locale } = useLocale();
   return (
     <button
       type="button"
@@ -155,10 +159,11 @@ function ScenarioCard({
   scenario: SavedScenario;
   delay: number;
   progress: ReturnType<ReturnType<typeof useReviewProgress>["get"]>;
-  onDelete: () => void;
+  onDelete: () => {t("void;")}
 }) {
+  const { t, locale } = useLocale();
   const navigate = useNavigate();
-  const cards = useMemo(() => buildStudySet(scenario.analysis), [scenario]);
+  const cards = useMemo(() => {t("buildStudySet(scenario.analysis, t), [scenario, t]);")}
   const mastered = masteredCount(cards, progress);
 
   return (
@@ -167,12 +172,12 @@ function ScenarioCard({
         <div className="min-w-0">
           <h2 className="truncate text-sm font-semibold">{scenario.title}</h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            {new Date(scenario.savedAt).toLocaleDateString()} · {scenario.setting}
+            {new Date(scenario.savedAt).toLocaleDateString(locale)} · {t(scenario.setting)}
           </p>
         </div>
         <button
           onClick={onDelete}
-          aria-label={`Delete ${scenario.title}`}
+          aria-label={t("Delete {t(title)}", { title: scenario.title })}
           className="shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
@@ -181,19 +186,19 @@ function ScenarioCard({
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         <span className="rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-medium text-accent-foreground">
-          {scenario.mainGap}
+          {t(scenario.mainGap)}
         </span>
         <span className="rounded-full bg-sage px-2.5 py-0.5 text-[11px] font-medium text-sage-foreground">
-          {scenario.strategy}
+          {t(scenario.strategy)}
         </span>
       </div>
 
       <p className="mt-3 text-xs text-muted-foreground">
         {cards.length === 0
-          ? "This analysis is too sparse for study cards."
-          : `${mastered} of ${cards.length} cards marked understood`}
+          ? t("This analysis is too sparse for study cards.")
+          : t("{count} of {total} cards marked understood", { count: mastered, total: cards.length })}
         {progress.lastTotal
-          ? ` · last quiz ${progress.lastCorrect}/${progress.lastTotal}`
+          ? ` · ${t("Last quiz: {correct}/{total}", { correct: progress.lastCorrect ?? 0, total: progress.lastTotal })}`
           : ""}
       </p>
 
@@ -207,16 +212,16 @@ function ScenarioCard({
             navigate({ to: "/result" });
           }}
         >
-          Open analysis
-        </Button>
+            {t('Open analysis')}
+          </Button>
         <Button asChild size="sm" variant="secondary" className="rounded-full text-xs" disabled={cards.length === 0}>
           <Link to="/review/$id/flashcards" params={{ id: scenario.id }}>
-            <Layers className="mr-1.5 h-3.5 w-3.5" /> Flashcards
+            <Layers className="mr-1.5 h-3.5 w-3.5" /> {t("Flashcards")}
           </Link>
         </Button>
         <Button asChild size="sm" className="rounded-full text-xs">
           <Link to="/review/$id/quiz" params={{ id: scenario.id }}>
-            <GraduationCap className="mr-1.5 h-3.5 w-3.5" /> Quiz
+            <GraduationCap className="mr-1.5 h-3.5 w-3.5" /> {t("Quiz")}
           </Link>
         </Button>
       </div>
