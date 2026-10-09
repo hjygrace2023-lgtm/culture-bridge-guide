@@ -28,8 +28,7 @@ export function CulturePicker() {
 
       <div className="px-5 py-5 sm:px-6">
         <p className="max-w-md text-xs leading-relaxed text-muted-foreground">
-          Optional. This describes the situation, not the person — it only suggests communication tendencies that are
-          sometimes reported in a setting.
+          {t("Optional. This describes the situation, not the person — it only suggests communication tendencies that are sometimes reported in a setting.")}
         </p>
 
         <div className="relative mt-5">
