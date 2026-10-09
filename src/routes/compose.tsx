@@ -218,7 +218,7 @@ function ComposePage() {
                       : "border-border bg-background hover:bg-muted",
                   )}
                 >
-                  {FORMAT_CHIP_LABEL[f]}
+                  {t(FORMAT_CHIP_LABEL[f])}
                 </button>
               ))}
             </div>
@@ -261,7 +261,7 @@ function DraftCard({ draft, delay }: { draft: ComposeDraft; delay: number }) {
   const [copied, setCopied] = useState(false);
   return (
     <article className="animate-rise space-y-2" style={{ animationDelay: `${delay}ms` }}>
-      <Bubble side="user" label={draft.label}>
+      <Bubble side="user" label={t(draft.label)}>
         {draft.text}
       </Bubble>
       <div className="ml-auto max-w-[92%] rounded-xl bg-muted/60 px-3.5 py-2.5 sm:max-w-[85%]">

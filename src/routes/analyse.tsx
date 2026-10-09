@@ -289,7 +289,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   return (
     <div>
       <Label className="text-xs font-medium text-muted-foreground">
-        {label}
+        {t(label)}
         {hint && <span className="ml-1 opacity-70">· {hint}</span>}
       </Label>
       <div className="mt-1.5">{children}</div>
@@ -316,7 +316,7 @@ function Select({
       <option value="">{t("Not specified")}</option>
       {options.map(([key, label]) => (
         <option key={key} value={key}>
-          {label}
+          {t(label)}
         </option>
       ))}
     </select>

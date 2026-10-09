@@ -129,7 +129,7 @@ function ResultPage() {
                     it.plausibility === "requires-more-context" && "bg-lilac text-lilac-foreground",
                   )}
                 >
-                  {PLAUSIBILITY_LABEL[it.plausibility]}
+                  {t(PLAUSIBILITY_LABEL[it.plausibility])}
                 </span>
               </div>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{it.mightHaveMeant}</p>
@@ -314,7 +314,7 @@ function ResponseList({ analysis }: { analysis: Analysis }) {
                 : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
             )}
           >
-            {label}
+            {t(label)}
           </button>
         ))}
       </div>
@@ -328,7 +328,7 @@ function ResponseList({ analysis }: { analysis: Analysis }) {
               className="animate-rise rounded-xl border border-border/80 bg-background/60 p-4"
               style={{ animationDelay: `${i * 60}ms` }}
             >
-              <h3 className="text-sm font-semibold">{r.label}</h3>
+              <h3 className="text-sm font-semibold">{t(r.label)}</h3>
               <div className="mt-2">
                 <Bubble side="user">{wording}</Bubble>
               </div>
