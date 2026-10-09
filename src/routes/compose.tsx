@@ -285,7 +285,7 @@ function DraftCard({ draft, delay }: { draft: ComposeDraft; delay: number }) {
           }}
         >
           {copied ? <Check className="mr-1.5 h-3.5 w-3.5" /> : <Copy className="mr-1.5 h-3.5 w-3.5" />}
-          {copied ? t("Copied") : "Copy"}
+          {copied ? t("Copied") : t("Copy")}
         </Button>
       </div>
     </article>
