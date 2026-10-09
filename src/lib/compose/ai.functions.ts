@@ -16,6 +16,7 @@ const InputSchema = z.object({
   customRelationship: z.string().max(120).optional(),
   format: z.enum(["email", "text", "in-person"]),
   culture: z.string().max(120).nullable().optional(),
+  outputLanguage: z.string().max(40).optional(),
 });
 
 const SCHEMA = strictObject({
@@ -61,6 +62,7 @@ export const composeDraftsFn = createServerFn({ method: "POST" })
     lines.push(`Relationship to the other person: ${who}`);
     lines.push(`Format: ${FORMAT_CHIP_LABEL[data.format as ComposeFormat]}`);
     if (data.culture) lines.push(`Cultural setting the user selected: ${data.culture}`);
+    if (data.outputLanguage) lines.push(`Write all drafts, effects and trade-offs strictly in ${data.outputLanguage}. Keep the "label" values in English exactly as specified. Never mix languages.`);
     lines.push("Return three drafts as JSON matching the required schema.");
 
     const result = await generateJson<{ drafts: Array<{ label: string; text: string; effect: string; tradeOff: string }> }>(

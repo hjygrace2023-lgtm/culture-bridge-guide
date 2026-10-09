@@ -1,4 +1,4 @@
-import { useLocale } from "@/lib/i18n/store";
+import { aiLanguageName, useLocale } from "@/lib/i18n/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Copy, Loader2, PenLine } from "lucide-react";
@@ -84,6 +84,7 @@ function ComposePage() {
           ...(customRelationship.trim() ? { customRelationship: customRelationship.trim() } : {}),
           format,
           culture,
+          outputLanguage: aiLanguageName(locale),
         },
       });
       setDrafts(result);

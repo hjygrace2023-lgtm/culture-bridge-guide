@@ -8,6 +8,6 @@ import { analyseSituationFn } from "./ai.functions";
  * server-side. The returned shape is the `Analysis` contract in `./types`,
  * so the UI needs no knowledge of the backend.
  */
-export async function analyseSituation(input: SituationInput): Promise<Analysis> {
-  return analyseSituationFn({ data: input });
+export async function analyseSituation(input: SituationInput, outputLanguage?: string): Promise<Analysis> {
+  return analyseSituationFn({ data: { ...input, outputLanguage } });
 }

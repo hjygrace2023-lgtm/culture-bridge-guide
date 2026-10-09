@@ -1,4 +1,4 @@
-import { useLocale } from "@/lib/i18n/store";
+import { aiLanguageName, useLocale } from "@/lib/i18n/store";
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, Loader2, Lock, Sparkles } from "lucide-react";
@@ -120,7 +120,7 @@ function AnalysePage() {
     try {
       const input = { ...form, situation };
       setDraftInput(input);
-      const analysis = await analyseSituation(input);
+      const analysis = await analyseSituation(input, aiLanguageName(locale));
       setCurrentAnalysis(analysis);
       navigate({ to: "/result" });
     } catch {
