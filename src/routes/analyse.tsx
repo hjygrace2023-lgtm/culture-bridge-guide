@@ -65,7 +65,7 @@ export function extractQuoted(text: string): string | null {
 }
 
 function AnalysePage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const { culture } = useCultureContext();

@@ -39,7 +39,7 @@ export const Route = createFileRoute("/compose")({
 const FORMATS: ComposeFormat[] = ["email", "text", "in-person"];
 
 function ComposePage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { culture } = useCultureContext();
   const [mode, setMode] = useState<ComposeMode>("request");
   const [intent, setIntent] = useState("");
