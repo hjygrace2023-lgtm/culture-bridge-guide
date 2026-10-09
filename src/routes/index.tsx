@@ -56,7 +56,7 @@ function Home() {
       <section className="mt-6 grid gap-4 sm:grid-cols-3">
         <Tile to="/compose" color="bg-green" label={t("Organise language")} number="02" />
         <Tile to="/saved" color="bg-pink" label={t("Saved scenarios")} number="03" />
-        <Tile to="/review" color="bg-lime" label="Review &amp; practise" number="04" />
+        <Tile to="/review" color="bg-lime" label={t("Review & practise")} number="04" />
       </section>
 
       <section className="mt-6 flex justify-end border-t-2 border-foreground pt-5">
