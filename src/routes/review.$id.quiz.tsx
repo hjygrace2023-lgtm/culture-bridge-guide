@@ -12,13 +12,13 @@ export const Route = createFileRoute("/review/$id/quiz")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: t("Quiz \u2014 CultureLens") },
+      { title: "Quiz \u2014 CultureLens" },
       {
         name: "description",
-        content: t("A short, gentle quiz drawn from one saved analysis: interpretation, evidence, and response."),
+        content: "A short, gentle quiz drawn from one saved analysis: interpretation, evidence, and response.",
       },
-      { property: "og:title", content: t("Quiz \u2014 CultureLens") },
-      { property: "og:description", content: t("Practise separating evidence from assumption. No timers, no streaks.") },
+      { property: "og:title", content: "Quiz \u2014 CultureLens" },
+      { property: "og:description", content: "Practise separating evidence from assumption. No timers, no streaks." },
     ],
   }),
   component: QuizPage,
@@ -30,7 +30,7 @@ function QuizPage() {
   const { scenarios, hydrated } = useSavedScenarios();
   const { recordQuiz } = useReviewProgress();
 
-  const scenario = scenarios.find((s) => {t("s.id === id);")}
+  const scenario = scenarios.find((s) => s.id === id);
   const questions = useMemo(() => (scenario ? buildQuiz(scenario.analysis, t) : []), [scenario, t]);
 
   const [index, setIndex] = useState(0);
@@ -123,8 +123,8 @@ function QuizPage() {
   const choose = (option: QuizOption) => {
     if (picked) return;
     setPicked(option);
-    if (option.correct) setCorrect((c) => {t("c + 1);")}
-    else setMissed((m) => {t("m + 1);")}
+    if (option.correct) setCorrect((c) => c + 1);
+    else setMissed((m) => m + 1);
   };
 
   const next = () => {
@@ -132,7 +132,7 @@ function QuizPage() {
       recordQuiz(id, correct, questions.length);
       setDone(true);
     } else {
-      setIndex((i) => {t("i + 1);")}
+      setIndex((i) => i + 1);
       setPicked(null);
     }
   };

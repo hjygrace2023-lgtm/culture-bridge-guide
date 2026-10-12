@@ -13,13 +13,13 @@ export const Route = createFileRoute("/saved")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: t("Saved scenarios \u2014 CultureLens") },
+      { title: "Saved scenarios \u2014 CultureLens" },
       {
         name: "description",
-        content: t("Revisit the situations you saved, or practise them as flashcards to build your own judgement."),
+        content: "Revisit the situations you saved, or practise them as flashcards to build your own judgement.",
       },
-      { property: "og:title", content: t("Saved scenarios \u2014 CultureLens") },
-      { property: "og:description", content: t("Reopen a scenario, or flip through them as flashcards.") },
+      { property: "og:title", content: "Saved scenarios \u2014 CultureLens" },
+      { property: "og:description", content: "Reopen a scenario, or flip through them as flashcards." },
     ],
   }),
   component: SavedPage,
@@ -99,7 +99,7 @@ function ScenarioRow({
 }: {
   scenario: SavedScenario;
   delay: number;
-  onDelete: () => {t("void;")}
+  onDelete: () => void;
 }) {
   const { t, locale } = useLocale();
   const navigate = useNavigate();
@@ -114,7 +114,7 @@ function ScenarioRow({
         </div>
         <button
           onClick={onDelete}
-          aria-label={t("Delete {t(title)}", { title: scenario.title })}
+          aria-label={t("Delete {title}", { title: scenario.title })}
           className="shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
@@ -145,14 +145,14 @@ function ScenarioRow({
 
 function FlashcardDeck({ scenarios }: { scenarios: SavedScenario[] }) {
   const { t, locale } = useLocale();
-  const [order, setOrder] = useState<number[]>(() => scenarios.map((_, i) => {t("i));")}
+  const [order, setOrder] = useState<number[]>(() => scenarios.map((_, i) => i));
   const [pos, setPos] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
   const index = order[Math.min(pos, order.length - 1)] ?? 0;
   const scenario = scenarios[index];
   const top = useMemo(
-    () => {t("scenario?.analysis.interpretations.slice(0, 3) ?? [],")}
+    () => scenario?.analysis.interpretations.slice(0, 3) ?? [],
     [scenario],
   );
 
@@ -171,7 +171,7 @@ function FlashcardDeck({ scenarios }: { scenarios: SavedScenario[] }) {
         </span>
         <button
           onClick={() => {
-            setOrder((o) => [...o].sort(() => {t("Math.random() - 0.5));")}
+            setOrder((o) => [...o].sort(() => Math.random() - 0.5));
             setPos(0);
             setFlipped(false);
           }}

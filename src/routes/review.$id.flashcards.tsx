@@ -11,13 +11,13 @@ export const Route = createFileRoute("/review/$id/flashcards")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: t("Flashcards \u2014 CultureLens") },
+      { title: "Flashcards \u2014 CultureLens" },
       {
         name: "description",
-        content: t("Turn a saved situation over in your mind one card at a time: interpretations, facts, response."),
+        content: "Turn a saved situation over in your mind one card at a time: interpretations, facts, response.",
       },
-      { property: "og:title", content: t("Flashcards \u2014 CultureLens") },
-      { property: "og:description", content: t("A calm, three-card review of one saved situation.") },
+      { property: "og:title", content: "Flashcards \u2014 CultureLens" },
+      { property: "og:description", content: "A calm, three-card review of one saved situation." },
     ],
   }),
   component: FlashcardsPage,
@@ -29,7 +29,7 @@ function FlashcardsPage() {
   const { scenarios, hydrated } = useSavedScenarios();
   const { get, hydrated: progressReady, markCard } = useReviewProgress();
 
-  const scenario = scenarios.find((s) => {t("s.id === id);")}
+  const scenario = scenarios.find((s) => s.id === id);
   const [deck, setDeck] = useState<StudyCard[] | null>(null);
   const [pos, setPos] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -72,7 +72,7 @@ function FlashcardsPage() {
 
   const advance = () => {
     setRevealed(false);
-    setPos((p) => {t("Math.min(p + 1, list.length - 1));")}
+    setPos((p) => Math.min(p + 1, list.length - 1));
   };
   const atEnd = pos >= list.length - 1;
 
@@ -110,7 +110,7 @@ function FlashcardsPage() {
         ) : (
           <div className="animate-flip mt-6 border-t border-border pt-5" aria-live="polite">
             {card.back.map((section) => (
-              <section key={t(section.heading)} className="mt-4 first:mt-0">
+              <section key={section.heading} className="mt-4 first:mt-0">
                 <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t(section.heading)}
                 </h2>
@@ -179,7 +179,7 @@ function Missing({ title, body }: { title: string; body: string }) {
   const { t, locale } = useLocale();
   return (
     <div className="mx-auto max-w-md px-5 pt-20 text-center">
-      <h1 className="font-display text-2xl font-semibold">{t(title)}</h1>
+      <h1 className="font-display text-2xl font-semibold">{title}</h1>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(body)}</p>
       <Button asChild className="mt-6 rounded-full">
         <Link to="/review">{t('Back to Review')}</Link>

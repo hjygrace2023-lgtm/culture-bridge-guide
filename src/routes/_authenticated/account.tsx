@@ -21,10 +21,10 @@ export const Route = createFileRoute("/_authenticated/account")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: t("Your account \u2014 CultureLens") },
-      { name: "description", content: t("Your display name, picture and saved analysis history.") },
-      { property: "og:title", content: t("Your account \u2014 CultureLens") },
-      { property: "og:description", content: t("Manage your profile and review your saved history.") },
+      { title: "Your account \u2014 CultureLens" },
+      { name: "description", content: "Your display name, picture and saved analysis history." },
+      { property: "og:title", content: "Your account \u2014 CultureLens" },
+      { property: "og:description", content: "Manage your profile and review your saved history." },
     ],
   }),
   component: AccountPage,
@@ -181,7 +181,7 @@ function AccountPage() {
               </div>
               <button
                 type="button"
-                aria-label={t("Delete {t(title)}", { title: entry.title })}
+                aria-label={t("Delete {title}", { title: entry.title })}
                 onClick={() => removeEntry.mutate(entry.id)}
                 className="shrink-0 p-2 text-foreground/60 transition-colors hover:text-destructive"
               >
