@@ -7,14 +7,14 @@ export const Route = createFileRoute("/about")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: t("Methodology \u2014 CultureLens") },
+      { title: "Methodology \u2014 CultureLens" },
       {
         name: "description",
         content:
-          t("How CultureLens reasons: intercultural conflict-resolution principles, and why it offers possibilities rather than verdicts."),
+          "How CultureLens reasons: intercultural conflict-resolution principles, and why it offers possibilities rather than verdicts.",
       },
-      { property: "og:title", content: t("Methodology \u2014 CultureLens") },
-      { property: "og:description", content: t("Principles, limits, and responsible-use commitments.") },
+      { property: "og:title", content: "Methodology \u2014 CultureLens" },
+      { property: "og:description", content: "Principles, limits, and responsible-use commitments." },
     ],
   }),
   component: AboutPage,
@@ -46,7 +46,7 @@ function AboutPage() {
         <h2 className="text-base font-semibold">{t('Principles it draws on')}</h2>
         <dl className="mt-3 space-y-3">
           {PRINCIPLES.map(([name, body]) => (
-            <div key={t(name)}>
+            <div key={name}>
               <dt className="text-sm font-semibold">{t(name)}</dt>
               <dd className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{t(body)}</dd>
             </div>

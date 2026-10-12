@@ -13,14 +13,14 @@ export const Route = createFileRoute("/review/")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: t("Review \u2014 CultureLens") },
+      { title: "Review \u2014 CultureLens" },
       {
         name: "description",
         content:
-          t("Revisit saved situations as flashcards or a short quiz, and practise noticing assumptions before acting on them."),
+          "Revisit saved situations as flashcards or a short quiz, and practise noticing assumptions before acting on them.",
       },
-      { property: "og:title", content: t("Learn from past conversations \u2014 CultureLens") },
-      { property: "og:description", content: t("Flashcards and quizzes built from the scenarios you saved.") },
+      { property: "og:title", content: "Learn from past conversations \u2014 CultureLens" },
+      { property: "og:description", content: "Flashcards and quizzes built from the scenarios you saved." },
     ],
   }),
   component: ReviewHub,
@@ -40,14 +40,14 @@ function ReviewHub() {
   }, []);
 
   const gaps = useMemo(
-    () => Array.from(new Set(scenarios.map((s) => {t("s.mainGap))).sort(),")}
+    () => Array.from(new Set(scenarios.map((s) => s.mainGap))).sort(),
     [scenarios],
   );
 
   const visible = useMemo(() => {
-    if (filter === "selected") return scenarios.filter((s) => {t("s.id === currentId);")}
+    if (filter === "selected") return scenarios.filter((s) => s.id === currentId);
     if (filter === "all") return scenarios;
-    return scenarios.filter((s) => {t("s.mainGap === filter);")}
+    return scenarios.filter((s) => s.mainGap === filter);
   }, [scenarios, filter, currentId]);
 
   return (
@@ -84,13 +84,13 @@ function ReviewHub() {
             <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
             {t('All saved')}
           </FilterChip>
-            {currentId && scenarios.some((s) => {t("s.id === currentId) && (")}
+            {currentId && scenarios.some((s) => s.id === currentId) && (
               <FilterChip active={filter === "selected"} onClick={() => setFilter("selected")}>
             {t('Current scenario')}
           </FilterChip>
             )}
             {gaps.map((g) => (
-              <FilterChip key={t(g)} active={filter === g} onClick={() => setFilter(g)}>
+              <FilterChip key={g} active={filter === g} onClick={() => setFilter(g)}>
                 {t(g)}
               </FilterChip>
             ))}
@@ -129,7 +129,7 @@ function FilterChip({
   children,
 }: {
   active: boolean;
-  onClick: () => {t("void;")}
+  onClick: () => void;
   children: React.ReactNode;
 }) {
   const { t, locale } = useLocale();
@@ -159,11 +159,11 @@ function ScenarioCard({
   scenario: SavedScenario;
   delay: number;
   progress: ReturnType<ReturnType<typeof useReviewProgress>["get"]>;
-  onDelete: () => {t("void;")}
+  onDelete: () => void;
 }) {
   const { t, locale } = useLocale();
   const navigate = useNavigate();
-  const cards = useMemo(() => {t("buildStudySet(scenario.analysis, t), [scenario, t]);")}
+  const cards = useMemo(() => buildStudySet(scenario.analysis, t), [scenario, t]);
   const mastered = masteredCount(cards, progress);
 
   return (
@@ -177,7 +177,7 @@ function ScenarioCard({
         </div>
         <button
           onClick={onDelete}
-          aria-label={t("Delete {t(title)}", { title: scenario.title })}
+          aria-label={t("Delete {title}", { title: scenario.title })}
           className="shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
