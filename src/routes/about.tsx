@@ -47,8 +47,8 @@ function AboutPage() {
         <dl className="mt-3 space-y-3">
           {PRINCIPLES.map(([name, body]) => (
             <div key={name}>
-              <dt className="text-sm font-semibold">{t(name)}</dt>
-              <dd className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{t(body)}</dd>
+              <dt className="text-sm font-semibold">{t(name ?? "")}</dt>
+              <dd className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{t(body ?? "")}</dd>
             </div>
           ))}
         </dl>
