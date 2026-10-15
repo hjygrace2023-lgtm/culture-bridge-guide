@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      concept_mastery: {
+        Row: {
+          category: string
+          concept: string
+          hits: number
+          last_correct: boolean | null
+          mastered_after_miss: boolean
+          misses: number
+          region: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          concept: string
+          hits?: number
+          last_correct?: boolean | null
+          mastered_after_miss?: boolean
+          misses?: number
+          region: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          concept?: string
+          hits?: number
+          last_correct?: boolean | null
+          mastered_after_miss?: boolean
+          misses?: number
+          region?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       history_entries: {
         Row: {
           created_at: string
@@ -65,12 +101,210 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_attempts: {
+        Row: {
+          chosen_id: string
+          correct: boolean
+          created_at: string
+          id: string
+          is_first: boolean
+          question_id: string
+          session_id: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          chosen_id: string
+          correct: boolean
+          created_at?: string
+          id?: string
+          is_first: boolean
+          question_id: string
+          session_id: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          chosen_id?: string
+          correct?: boolean
+          created_at?: string
+          id?: string
+          is_first?: boolean
+          question_id?: string
+          session_id?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          category: string
+          concept: string
+          correct_id: string
+          created_at: string
+          difficulty: number
+          explanation: string
+          feedback: Json
+          id: string
+          options: Json
+          owner_id: string | null
+          question: string
+          region: string
+          scenario: string
+          source: string
+        }
+        Insert: {
+          category: string
+          concept: string
+          correct_id: string
+          created_at?: string
+          difficulty?: number
+          explanation?: string
+          feedback?: Json
+          id?: string
+          options: Json
+          owner_id?: string | null
+          question: string
+          region: string
+          scenario: string
+          source?: string
+        }
+        Update: {
+          category?: string
+          concept?: string
+          correct_id?: string
+          created_at?: string
+          difficulty?: number
+          explanation?: string
+          feedback?: Json
+          id?: string
+          options?: Json
+          owner_id?: string | null
+          question?: string
+          region?: string
+          scenario?: string
+          source?: string
+        }
+        Relationships: []
+      }
+      quiz_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          question_ids: string[]
+          regions: string[]
+          streak: number
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          question_ids?: string[]
+          regions?: string[]
+          streak?: number
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          question_ids?: string[]
+          regions?: string[]
+          streak?: number
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          leaderboard_opt_out: boolean
+          public_name: string | null
+          regions: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          leaderboard_opt_out?: boolean
+          public_name?: string | null
+          regions?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          leaderboard_opt_out?: boolean
+          public_name?: string | null
+          regions?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      xp_events: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          reason: string
+          region: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          reason: string
+          region?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          reason?: string
+          region?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      complete_quiz: { Args: { _session: string }; Returns: Json }
+      get_leaderboard: {
+        Args: { _period: string; _region: string }
+        Returns: Json
+      }
+      start_quiz: {
+        Args: { _regions: string[]; _size?: number }
+        Returns: string
+      }
+      submit_answer: {
+        Args: { _choice: string; _question: string; _session: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
