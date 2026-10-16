@@ -59,6 +59,17 @@ function ReviewHub() {
           </p>
       </header>
 
+      <Link
+        to="/review/challenge"
+        className="animate-rise mt-6 flex items-center justify-between rounded-2xl bg-primary p-6 text-primary-foreground transition-transform hover:-translate-y-0.5"
+      >
+        <div>
+          <p className="font-display text-2xl font-bold">{t("Culture Quiz Challenge")}</p>
+          <p className="mt-1 text-sm opacity-80">{t("Real scenarios, XP and streaks across eight regions.")}</p>
+        </div>
+        <span className="text-4xl font-bold" aria-hidden>→</span>
+      </Link>
+
       {!hydrated || !progressReady ? (
         <div className="mt-8 space-y-3" aria-busy="true">
           {[0, 1].map((i) => (
