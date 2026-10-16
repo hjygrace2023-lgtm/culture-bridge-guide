@@ -77,7 +77,7 @@ function Challenge() {
   const answer = async (choice: string) => {
     if (picked || !sessionId) return;
     setPicked(choice); setBusy(true);
-    const { data, error: e } = await supabase.rpc("submit_answer", { _session: sessionId, _question: questions[i].id, _choice: choice });
+    const { data, error: e } = await supabase.rpc("submit_answer", { _session: sessionId, _question: questions[i]!.id, _choice: choice });
     setBusy(false);
     if (e || !data) { setError(t("Your answer couldn't be saved.")); return; }
     const r = data as unknown as Result;
@@ -140,7 +140,7 @@ function Challenge() {
     );
   }
 
-  const q = questions[i];
+  const q = questions[i]!;
   return (
     <div className="mx-auto max-w-2xl px-5 pb-10 pt-8">
       <div className="flex items-center justify-between text-sm">

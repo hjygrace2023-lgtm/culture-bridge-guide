@@ -332,7 +332,6 @@ export const DICT: Record<string, [string, string, string, string]> = {
   "Change picture": ["写真を変更", "更换头像", "Cambiar foto", "Changer la photo"],
   "Saved.": ["保存しました。", "已保存。", "Guardado.", "Enregistré."],
   History: ["履歴", "历史记录", "Historial", "Historique"],
-  "Loading…": ["読み込み中…", "加载中…", "Cargando…", "Chargement…"],
   "Nothing yet. Analyses and drafts you make while signed in appear here.": ["まだありません。ログイン中に作った分析や文案がここに表示されます。", "暂无记录，登录时生成的分析与草稿会显示在这里。", "Aún nada. Aquí aparecen los análisis y borradores que creas con sesión iniciada.", "Rien pour le moment. Vos analyses et brouillons créés en étant connecté apparaissent ici."],
   "The picture couldn't be uploaded.": ["写真をアップロードできませんでした。", "头像上传失败。", "No se pudo subir la foto.", "La photo n'a pas pu être téléversée."],
   "Not signed in": ["ログインしていません", "尚未登录", "No has iniciado sesión", "Vous n'êtes pas connecté"],
