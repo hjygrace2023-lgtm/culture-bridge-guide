@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth/session";
 import { useLocale } from "@/lib/i18n/store";
 import { cn } from "@/lib/utils";
+import { buildQuiz } from "@/lib/review/study";
+import type { SavedScenario } from "@/lib/analysis/types";
 
 export const Route = createFileRoute("/review/challenge")({
   head: () => ({
@@ -61,8 +63,29 @@ function Challenge() {
     );
   }
 
+  const syncPersonal = async () => {
+    const uid = session.user.id;
+    let saved: SavedScenario[] = [];
+    try { saved = JSON.parse(localStorage.getItem("culturelens:saved") ?? "[]"); } catch { /* ignore */ }
+    if (!saved.length) return;
+    const { data: existing } = await supabase.from("quiz_questions").select("concept").eq("owner_id", uid);
+    const have = new Set((existing ?? []).map((r) => r.concept));
+    const rows = saved.flatMap((s) =>
+      buildQuiz(s.analysis).filter((q) => !have.has(q.id) && q.options.some((o) => o.correct)).map((q) => ({
+        owner_id: uid, source: "personal", region: t("Your scenario"), category: "personal", difficulty: 2,
+        concept: q.id, scenario: s.title, question: q.question,
+        options: q.options.map(({ id, text }) => ({ id, text })),
+        correct_id: q.options.find((o) => o.correct)!.id,
+        feedback: Object.fromEntries(q.options.map((o) => [o.id, o.feedback])),
+        explanation: q.explanation,
+      })),
+    );
+    if (rows.length) await supabase.from("quiz_questions").insert(rows);
+  };
+
   const start = async () => {
     setBusy(true); setError(null);
+    await syncPersonal().catch(() => {});
     const { data: sid, error: e1 } = await supabase.rpc("start_quiz", { _regions: regions, _size: 10 });
     if (e1 || !sid) { setError(t("The quiz couldn't start. Please try again.")); setBusy(false); return; }
     const { data: s } = await supabase.from("quiz_sessions").select("question_ids").eq("id", sid).single();

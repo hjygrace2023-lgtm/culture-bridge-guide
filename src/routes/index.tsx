@@ -59,6 +59,16 @@ function Home() {
         <Tile to="/review" color="bg-lime" label={t("Review & practise")} number="04" />
       </section>
 
+      <section className="mt-4">
+        <Link
+          to="/review/challenge"
+          className="group flex items-center justify-between rounded-2xl bg-foreground px-6 py-5 text-background"
+        >
+          <span className="font-display text-2xl font-extrabold tracking-tight">{t("Culture Quiz Challenge")}</span>
+          <ArrowUpRight className="h-7 w-7 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </Link>
+      </section>
+
       <section className="mt-6 flex justify-end border-t-2 border-foreground pt-5">
         <Link
           to="/analyse"
